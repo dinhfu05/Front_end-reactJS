@@ -1,0 +1,54 @@
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #1e1e1e;
+  color: white;
+  height: 100vh;
+  width: 300px;
+  padding: 20px 0;
+  box-sizing: border-box;
+  gap: 24px;
+}
+
+.logo img {
+  width: 130px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.column ul {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.column li {
+  list-style: none;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.column button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 32px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+}
+
+.column button:hover {
+  background-color: #333;
+  color: #00ffcc;
+}
+
+.column button.active-tab {
+  color: #00ffcc;
+  font-weight: 800;
+}

@@ -1,0 +1,138 @@
+.profile-form-container {
+  background: #fff;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.13);
+  width: 1100px;
+  max-width: 98vw;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.profile-sidebar {
+  background: #fff;
+  min-width: 220px;
+  max-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 18px 18px 18px;
+  border-right: 1px solid #eee;
+}
+
+.profile-avatar-big {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 18px;
+  border: 3px solid #e3e6f0;
+}
+
+.profile-sidebar-name {
+  font-weight: bold;
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+  color: #222;
+  text-align: center;
+}
+
+.profile-experience textarea {
+  min-width: 200px;
+  height: 100px;
+  padding: 10px;
+  max-width: 500px;
+  font-size: 1.5rem;
+  line-height: 1.6;
+}
+
+.profile-sidebar-role {
+  color: #120444;
+  font-size: 1rem;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.profile-sidebar-email {
+  color: #444;
+  font-size: 0.98rem;
+  margin-bottom: 24px;
+  text-align: center;
+  word-break: break-all;
+}
+
+.profile-logout-btn {
+  margin-top: auto;
+  padding: 10px 0;
+  width: 100%;
+  background: #120444;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.08rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.profile-logout-btn:hover {
+  background: #120444;
+}
+
+.profile-main-form,
+.profile-experience {
+  flex: 1;
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.profile-main-form {
+  border-right: 1px solid #eee;
+}
+
+.profile-form-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #120444;
+  margin-bottom: 18px;
+}
+
+.profile-form-row {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 18px;
+}
+
+.profile-form-row > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-main-form label,
+.profile-experience label {
+  font-size: 1rem;
+  color: #120444;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.profile-main-form input,
+.profile-experience input,
+.profile-experience textarea {
+  padding: 8px 10px;
+  border: 1px solid #d1b3e0;
+  border-radius: 5px;
+  font-size: 1rem;
+  background: #f8f6fa;
+  color: #222;
+  margin-bottom: 8px;
+  resize: none;
+}
+
+.profile-experience textarea {
+  min-height: 60px;
+  max-height: 120px;
+}

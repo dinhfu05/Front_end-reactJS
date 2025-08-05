@@ -1,0 +1,42 @@
+.accident {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.accident table {
+  border-collapse: collapse;
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+  min-width: 700px;
+}
+
+.accident th,
+.accident td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #333;
+}
+
+.accident th {
+  background-color: #2b2b2b;
+  color: #00ffcc;
+}
+
+.accident td img {
+  width: 300px;
+  height: auto;
+  border-radius: 4px;
+}
+
+.status-open {
+  color: #00ffcc;
+  font-weight: bold;
+}
+
+.status-closed {
+  color: #ff4d4d;
+  font-weight: bold;
+}
