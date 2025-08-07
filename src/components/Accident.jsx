@@ -1,10 +1,17 @@
+import { useState } from "react";
 import data from "../../data";
 import "./Accident.css";
 
 function Accident() {
+  const [selectedAccident, setSelectedAccident] = useState(null);
+
+  const handleRowClick = (item) => {
+    setSelectedAccident(item);
+  };
+
   return (
     <div className="accident">
-      <div className="nav-bar">
+      <div className="table-container">
         <table>
           <thead>
             <tr>
@@ -18,8 +25,8 @@ function Accident() {
           </thead>
           <tbody>
             {data.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
+              <tr key={item.id} onClick={() => handleRowClick(item)}>
+                <td className="clickable-id">{item.id}</td>
                 <td>{item.road}</td>
                 <td>{item.time}</td>
                 <td>
@@ -37,6 +44,35 @@ function Accident() {
             ))}
           </tbody>
         </table>
+
+        {/* Popup Modal */}
+        {selectedAccident && (
+          <div
+            className="modal-overlay"
+            onClick={() => setSelectedAccident(null)}
+          >
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h2>Chi tiết tai nạn</h2>
+              <p>
+                <strong>ID:</strong> {selectedAccident.id}
+              </p>
+              <p>
+                <strong>Đường:</strong> {selectedAccident.road}
+              </p>
+              <p>
+                <strong>Thời gian:</strong> {selectedAccident.time}
+              </p>
+              <p>
+                <strong>Người báo cáo:</strong> {selectedAccident.user}
+              </p>
+              <p>
+                <strong>Trạng thái:</strong> {selectedAccident.status}
+              </p>
+              <img src={selectedAccident.image} alt="Accident Detail" />
+              <button onClick={() => setSelectedAccident(null)}>Đóng</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

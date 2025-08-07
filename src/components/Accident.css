@@ -1,16 +1,24 @@
+/* Container bên phải cho Accident */
 .accident {
-  width: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%; /* Full chiều rộng bên phải */
+  height: 100%; /* Full chiều cao phần content-right */
+  margin-top: 0; /* Bỏ margin thừa */
+  overflow: auto; /* Cuộn nếu bảng dài hoặc rộng */
+  background-color: transparent;
 }
 
+.table-container {
+  width: 100%; /* Bảng full chiều rộng */
+  height: 100%;
+}
+
+/* Bảng Accident */
 .accident table {
   border-collapse: collapse;
+  width: 100%; /* Full width */
   background-color: #1e1e1e;
   border-radius: 10px;
   overflow: hidden;
-  min-width: 700px;
 }
 
 .accident th,
@@ -26,7 +34,7 @@
 }
 
 .accident td img {
-  width: 300px;
+  width: 400px;
   height: auto;
   border-radius: 4px;
 }
@@ -39,4 +47,67 @@
 .status-closed {
   color: #ff4d4d;
   font-weight: bold;
+}
+
+/* Clickable ID */
+.clickable-id {
+  font-weight: bold;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #1e1e1e;
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  max-width: 600px;
+  width: 80%;
+  text-align: center;
+  animation: popup-fade 0.3s ease;
+}
+
+.modal-content img {
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.modal-content button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #00ffcc;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-content button:hover {
+  background-color: #00cc99;
+}
+
+/* Animation */
+@keyframes popup-fade {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
