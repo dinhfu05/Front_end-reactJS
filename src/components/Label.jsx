@@ -7,16 +7,18 @@ export function TabButton({ onselect, children }) {
     </li>
   );
 }
-function Column({ setActiveTab }) {
+
+function Column({ setActiveTab, onLogout }) {
   return (
     <div className="column">
       <div className="logo">
         <img className="sidebar-logo" src="/ic_logo.png" alt="Logo" />
       </div>
-      <TabButton onselect={() => setActiveTab("home")}>Trang chủ</TabButton>
       <TabButton onselect={() => setActiveTab("info")}>Thông tin</TabButton>
       <TabButton onselect={() => setActiveTab("accident")}>Tai nạn</TabButton>
       <TabButton onselect={() => setActiveTab("setting")}>Cài đặt</TabButton>
+      <TabButton onselect={onLogout}>Đăng xuất</TabButton>{" "}
+      {/* ✅ Gọi logout đúng */}
     </div>
   );
 }

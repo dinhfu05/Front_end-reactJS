@@ -1,24 +1,52 @@
 import { useState } from "react";
+import { MdEmail, MdLock } from "react-icons/md";
 import "./Login.css";
 
 function Login({ onLogin }) {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [pass, setPass] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    if (!email || !pass) {
-      setError("Vui lòng nhập email và mật khẩu.");
+
+    if (!username || !pass) {
+      setError("Vui lòng nhập Username và mật khẩu.");
       return;
     }
+
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch("http://localhost:8087/quet/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: pass,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Sai tài khoản hoặc mật khẩu");
+      }
+
+      const data = await res.json();
+
+      // ✅ Lưu token và id
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.id);
+
+      // ✅ Gọi lại App.js và truyền id để dùng ở Info
+      onLogin({ id: data.id });
+    } catch (err) {
+      setError(err.message || "Đăng nhập thất bại");
+    } finally {
       setLoading(false);
-      onLogin(); // Gọi hàm này để báo login thành công
-    }, 2000);
+    }
   };
 
   return (
@@ -47,23 +75,18 @@ function Login({ onLogin }) {
         <form onSubmit={handleLogin}>
           <div className="input-group">
             <span className="input-icon">
-              <svg width="20" height="20" fill="white">
-                <path d="M2 10a8 8 0 1116 0A8 8 0 012 10zm8-4a4 4 0 100 8 4 4 0 000-8z" />
-              </svg>
+              <MdEmail size={20} color="white" />
             </span>
             <input
-              type="email"
-              placeholder="Email ID"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div className="input-group">
             <span className="input-icon">
-              <svg width="20" height="20" fill="white">
-                <path d="M5 10V8a5 5 0 1110 0v2" />
-                <rect x="5" y="10" width="10" height="8" rx="2" />
-              </svg>
+              <MdLock size={20} color="white" />
             </span>
             <input
               type="password"
@@ -75,7 +98,6 @@ function Login({ onLogin }) {
           {error && (
             <div style={{ color: "red", marginBottom: 12 }}>{error}</div>
           )}
-          <div className="options"></div>
           <button type="submit" className="submit-btn" disabled={loading}>
             {loading ? <span className="spinner"></span> : "Login"}
           </button>

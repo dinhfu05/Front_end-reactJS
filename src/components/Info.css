@@ -54,7 +54,7 @@
   text-align: center;
 }
 
-.profile-sidebar-email {
+.profile-sidebar-cccd {
   color: #444;
   font-size: 0.98rem;
   margin-bottom: 24px;
@@ -62,19 +62,6 @@
   word-break: break-all;
 }
 
-.profile-logout-btn {
-  margin-top: auto;
-  padding: 10px 0;
-  width: 100%;
-  background: #120444;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.08rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
-}
 .profile-logout-btn:hover {
   background: #120444;
 }
@@ -135,4 +122,9 @@
 .profile-experience textarea {
   min-height: 60px;
   max-height: 120px;
+}
+@media (max-width: 768px) {
+  .profile-form-row {
+    flex-direction: column;
+  }
 }
