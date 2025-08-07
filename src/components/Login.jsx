@@ -36,9 +36,9 @@ function Login({ onLogin }) {
 
       const data = await res.json();
 
-      // ✅ Lưu token và id
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", data.id);
+      // ✅ Lưu token và userId vào sessionStorage
+      sessionStorage.setItem("token", data.token);
+      sessionStorage.setItem("userId", data.id);
 
       // ✅ Gọi lại App.js và truyền id để dùng ở Info
       onLogin({ id: data.id });

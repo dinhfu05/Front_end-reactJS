@@ -5,7 +5,7 @@ function Info({ onLogout }) {
   const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     console.log("Token từ localStorage:", token); // 🧪 kiểm tra token
 
     if (!token) {
