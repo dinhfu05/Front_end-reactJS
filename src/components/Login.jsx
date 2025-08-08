@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MdEmail, MdLock } from "react-icons/md";
+import { MdPerson, MdLock } from "react-icons/md";
 import "./Login.css";
 
 function Login({ onLogin }) {
@@ -76,7 +76,7 @@ function Login({ onLogin }) {
         <form onSubmit={handleLogin}>
           <div className="input-group">
             <span className="input-icon">
-              <MdEmail size={20} color="white" />
+              <MdPerson size={20} color="white" />
             </span>
             <input
               type="text"
