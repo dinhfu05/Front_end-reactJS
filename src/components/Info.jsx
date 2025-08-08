@@ -13,7 +13,8 @@ function Info({ onLogout }) {
       return;
     }
 
-    fetch("http://localhost:8087/quet/api/person", {
+    const id = sessionStorage.getItem("userId");
+    fetch(`http://localhost:8087/quet/api/person/${id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -27,8 +28,9 @@ function Info({ onLogout }) {
         return res.json();
       })
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setUserInfo(data[0]); // ✅ Lấy phần tử đầu tiên trong mảng
+        // if (Array.isArray(data) && data.length > 0) {
+        if (data) {
+          setUserInfo(data); // ✅ Lấy phần tử đầu tiên trong mảng
         } else {
           console.error("Dữ liệu người dùng không hợp lệ:", data);
         }
@@ -44,7 +46,7 @@ function Info({ onLogout }) {
         <div className="profile-sidebar">
           <img src="/phu.jpg" alt="avatar" className="profile-avatar-big" />
           <div className="profile-sidebar-name">
-            {userInfo?.account?.username || "Khách"}
+            {sessionStorage.getItem("username") || "Khách"}
           </div>
         </div>
         <div className="profile-main-form">

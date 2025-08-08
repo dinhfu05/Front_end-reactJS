@@ -1,3 +1,4 @@
+/* Sidebar chính */
 .column {
   display: flex;
   flex-direction: column;
@@ -11,6 +12,52 @@
   gap: 24px;
 }
 
+.logo img {
+  width: 130px;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Danh sách menu */
+.column ul {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.column li {
+  list-style: none;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+/* Nút trong sidebar */
+.column button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 32px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  text-align: left;
+  text-transform: capitalize;
+}
+
+.column button:hover {
+  background-color: #333;
+  color: #00ffcc;
+}
+
+.column button.active-tab {
+  color: #00ffcc;
+  font-weight: 800;
+}
+
+/* Nút đăng xuất */
 .profile-logout-btn {
   margin-top: auto;
   padding: 10px 0;
@@ -25,48 +72,85 @@
   transition: background 0.2s;
 }
 
-.logo img {
-  width: 130px;
-  height: auto;
-  border-radius: 8px;
+/* --- Popup overlay nền tối --- */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
-.column ul {
-  padding: 0;
-  margin: 0;
-  width: 100%;
-}
-
-.column li {
-  list-style: none;
-  width: 100%;
-  margin-bottom: 8px;
-}
-
-.column button {
-  background-color: transparent;
-  border: none;
+/* --- Nội dung popup --- */
+.popup {
+  background-color: #2a2a2a;
   color: white;
-  padding: 10px 8px;
-  border-radius: 8px;
+  padding: 30px 40px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  width: 90%;
+  max-width: 400px;
+}
+
+/* Tiêu đề popup */
+.popup-content h2 {
+  font-size: 8px;
+  font-weight: 600px;
+  margin-bottom: 1px;
+}
+
+/* Câu hỏi xác nhận */
+.popup p {
+  font-size: 30px;
+  margin-bottom: 24px;
+  margin-top: 0px;
+  font-weight: bold;
+}
+
+/* Các nút trong popup */
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.popup-buttons button {
+  padding: 6px 12px;
+  min-width: 60px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1px; /* 👈 chữ nhỏ lại */
+  font-weight: 500;
+  text-align: center;
   cursor: pointer;
-  width: 100%;
-  font-size: 32px;
-  font-weight: 700;
-  transition: all 0.3s ease;
-  text-transform: capitalize;
+  transition: background-color 0.2s ease;
+  display: flex; /* 👈 để căn giữa */
+  justify-content: center; /* 👈 căn giữa ngang */
+  align-items: center; /* 👈 căn giữa dọc */
 }
 
-.column button:hover {
-  background-color: #333;
-  color: #00ffcc;
+/* Nút xác nhận */
+.popup-buttons .confirm {
+  background-color: #00cc99;
+  color: white;
 }
 
-.column button.active-tab {
-  color: #00ffcc;
-  font-weight: 800;
+.popup-buttons .confirm:hover {
+  background-color: #00b386;
 }
 
-.column button {
-  text-align: left;
+/* Nút hủy */
+.popup-buttons .cancel {
+  background-color: #888;
+  color: white;
+}
+
+.popup-buttons .cancel:hover {
+  background-color: #666;
 }

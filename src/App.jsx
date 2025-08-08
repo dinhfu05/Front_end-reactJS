@@ -12,11 +12,12 @@ function App() {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const savedId = localStorage.getItem("userId");
-    if (token && savedId) {
+    const token = localStorage.getItem("token"); // token dùng để gọi API
+    const sessionId = sessionStorage.getItem("userId"); // id chỉ dùng để xác định người đăng nhập trong phiên
+
+    if (token && sessionId) {
       setIsLoggedIn(true);
-      setUserId(savedId);
+      setUserId(sessionId);
     }
   }, []);
 
@@ -36,7 +37,9 @@ function App() {
   if (!isLoggedIn) {
     return (
       <Login
-        onLogin={({ id }) => {
+        onLogin={({ token, id }) => {
+          localStorage.setItem("token", token); // lưu lâu dài
+          sessionStorage.setItem("userId", id); // chỉ dùng trong phiên
           setIsLoggedIn(true);
           setUserId(id);
           setActiveTab("accident");
@@ -52,9 +55,9 @@ function App() {
           setActiveTab={setActiveTab}
           onLogout={() => {
             localStorage.removeItem("token");
-            localStorage.removeItem("username");
-            localStorage.removeItem("id");
+            sessionStorage.removeItem("userId");
             setIsLoggedIn(false);
+            setUserId(null);
             setActiveTab("accident");
           }}
         />
