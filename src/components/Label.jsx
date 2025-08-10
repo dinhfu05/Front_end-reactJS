@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   FaInfoCircle,
   FaCarCrash,
@@ -10,9 +10,18 @@ import {
 } from "react-icons/fa";
 import "./Label.css";
 
-export function TabButton({ onselect, children, icon }) {
+export function TabButton({
+  to,
+  onselect,
+  children,
+  icon,
+  className,
+  isActive,
+}) {
   return (
-    <li className="sidebar-item">
+    <li
+      className={`sidebar-item ${isActive ? "active" : ""} ${className || ""}`}
+    >
       <button onClick={onselect}>
         {icon && <span className="icon">{icon}</span>}
         <span>{children}</span>
@@ -24,6 +33,7 @@ export function TabButton({ onselect, children, icon }) {
 function Column({ onLogout }) {
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleConfirmLogout = () => {
     localStorage.removeItem("token");
@@ -44,27 +54,42 @@ function Column({ onLogout }) {
         </div>
 
         <ul className="sidebar-menu">
-          <TabButton onselect={() => navigate("/info")} icon={<FaInfoCircle />}>
+          <TabButton
+            onselect={() => navigate("/info")}
+            icon={<FaInfoCircle />}
+            isActive={location.pathname === "/info"}
+          >
             Thông tin
           </TabButton>
+
           <TabButton
             onselect={() => navigate("/accident")}
             icon={<FaCarCrash />}
+            isActive={location.pathname === "/accident"}
           >
             Tai nạn
           </TabButton>
+
           <TabButton
             onselect={() => navigate("/PoliceList")}
             icon={<FaUserShield />}
+            isActive={location.pathname === "/PoliceList"}
           >
             Danh sách cảnh sát
           </TabButton>
-          <TabButton onselect={() => navigate("/setting")} icon={<FaCog />}>
+
+          <TabButton
+            onselect={() => navigate("/setting")}
+            icon={<FaCog />}
+            isActive={location.pathname === "/setting"}
+          >
             Cài đặt
           </TabButton>
+
           <TabButton
             onselect={() => setShowLogoutPopup(true)}
             icon={<FaSignOutAlt />}
+            isActive={false}
           >
             Đăng xuất
           </TabButton>

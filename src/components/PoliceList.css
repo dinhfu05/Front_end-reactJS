@@ -81,10 +81,12 @@
 }
 
 .modal-img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
+  width: 70% !important;
+  height: 70%;
   object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  margin: 0 auto 15px auto;
 }
 
 .close-btn {

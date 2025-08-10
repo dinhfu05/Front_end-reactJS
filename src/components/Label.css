@@ -31,6 +31,8 @@
 .sidebar-item button {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  text-align: left;
   gap: 12px;
   padding: 12px 20px;
   width: 100%;
@@ -38,7 +40,7 @@
   border-radius: 8px;
   background: none;
   color: white;
-  font-size: 16px;
+  font-size: 28px !important;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.3s, transform 0.2s;
@@ -54,30 +56,39 @@
   transform: scale(1.02);
 }
 
-/* Popup */
+/* Popup Overlay */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99999;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Popup Box */
 .popup {
   background: #1e1e1e;
   color: white;
-  padding: 20px 30px; /* 🔹 tăng padding để popup to hơn */
+  padding: 20px 50px;
   border-radius: 12px;
-  width: 400px; /* 🔹 tăng chiều rộng */
+  width: 380px;
   text-align: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
   border: 1px solid #4da6ff;
-  font-size: 18px; /* 🔹 chữ to hơn */
+  animation: scaleIn 0.25s ease-in-out;
 }
 
-.popup button {
-  padding: 10px 20px; /* 🔹 nút to hơn */
-  font-size: 16px; /* 🔹 chữ trên nút to hơn */
-  margin: 10px;
-}
 .popup p {
-  margin: 0 0 15px; /* Xóa khoảng trắng trên */
-  font-size: 28px; /* Nhỏ hơn một chút */
+  margin-top: 0px !important;
+  margin-bottom: 20px;
+  font-size: 28px;
   font-weight: bold;
 }
 
+/* Buttons */
 .popup-buttons {
   display: flex;
   justify-content: center;
@@ -85,20 +96,14 @@
 }
 
 .popup-buttons button {
-  padding: 25px 25px; /* Giảm padding */
+  padding: 10px 20px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 28px; /* Chữ nhỏ vừa */
+  font-size: 16px;
   font-weight: bold;
-  transition: background 0.2s, transform 0.1s;
-  white-space: nowrap; /* Giữ chữ trên 1 dòng */
-  min-width: 80px; /* Đủ rộng cho chữ */
-  height: 36px; /* Giảm chiều cao */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 150px;
+  transition: background 0.2s, transform 0.15s;
+  min-width: 110px;
 }
 
 .popup-buttons button:first-child {
@@ -114,12 +119,24 @@
 .popup-buttons button:hover {
   transform: scale(1.05);
 }
-.popup-overlay {
-  position: fixed;
-  inset: 0; /* top:0; right:0; bottom:0; left:0 */
-  display: flex;
-  justify-content: center;
-  align-items: center; /* ✅ Căn giữa theo chiều dọc */
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 99999;
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

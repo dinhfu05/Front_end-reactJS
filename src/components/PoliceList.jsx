@@ -8,6 +8,8 @@ const policeList = [
     rank: "Thượng úy",
     position: "Cảnh sát giao thông",
     img: "https://randomuser.me/api/portraits/men/1.jpg",
+    area: "Phường Bến Nghé",
+    phone: "0901234567",
   },
   {
     id: 2,
@@ -15,6 +17,8 @@ const policeList = [
     rank: "Đại úy",
     position: "Cảnh sát hình sự",
     img: "https://randomuser.me/api/portraits/women/2.jpg",
+    area: "Phường Thạnh Mỹ Tây",
+    phone: "0902345678",
   },
   {
     id: 3,
@@ -22,6 +26,8 @@ const policeList = [
     rank: "Thiếu tá",
     position: "Cảnh sát điều tra",
     img: "https://randomuser.me/api/portraits/men/3.jpg",
+    area: "Phường Tân Định",
+    phone: "0903456789",
   },
   {
     id: 4,
@@ -29,6 +35,8 @@ const policeList = [
     rank: "Trung úy",
     position: "Cảnh sát quản lý hành chính",
     img: "https://randomuser.me/api/portraits/women/4.jpg",
+    area: "Phường Linh Trung",
+    phone: "0904567890",
   },
   {
     id: 5,
@@ -36,6 +44,8 @@ const policeList = [
     rank: "Đại tá",
     position: "Cảnh sát phòng cháy chữa cháy",
     img: "https://randomuser.me/api/portraits/men/5.jpg",
+    area: "Phường Thảo Điền",
+    phone: "0905678901",
   },
   {
     id: 6,
@@ -43,6 +53,8 @@ const policeList = [
     rank: "Thượng tá",
     position: "Cảnh sát môi trường",
     img: "https://randomuser.me/api/portraits/women/6.jpg",
+    area: "Phường Phú Mỹ",
+    phone: "0906789012",
   },
   {
     id: 7,
@@ -50,6 +62,8 @@ const policeList = [
     rank: "Trung tá",
     position: "Cảnh sát cơ động",
     img: "https://randomuser.me/api/portraits/men/7.jpg",
+    area: "Phường An Lạc",
+    phone: "0907890123",
   },
   {
     id: 8,
@@ -57,6 +71,8 @@ const policeList = [
     rank: "Đại úy",
     position: "Cảnh sát hình sự",
     img: "https://randomuser.me/api/portraits/women/8.jpg",
+    area: "Phường Hiệp Bình Chánh",
+    phone: "0908901234",
   },
   {
     id: 9,
@@ -64,6 +80,8 @@ const policeList = [
     rank: "Thiếu tá",
     position: "Cảnh sát điều tra",
     img: "https://randomuser.me/api/portraits/men/9.jpg",
+    area: "Phường Tân Phú",
+    phone: "0909012345",
   },
   {
     id: 10,
@@ -71,6 +89,8 @@ const policeList = [
     rank: "Trung úy",
     position: "Cảnh sát quản lý hành chính",
     img: "https://randomuser.me/api/portraits/women/10.jpg",
+    area: "Phường Cát Lái",
+    phone: "0910123456",
   },
   {
     id: 11,
@@ -78,6 +98,8 @@ const policeList = [
     rank: "Đại tá",
     position: "Cảnh sát phòng cháy chữa cháy",
     img: "https://randomuser.me/api/portraits/men/11.jpg",
+    area: "Phường Phạm Ngũ Lão",
+    phone: "0911234567",
   },
   {
     id: 12,
@@ -85,6 +107,8 @@ const policeList = [
     rank: "Thượng úy",
     position: "Cảnh sát giao thông",
     img: "https://randomuser.me/api/portraits/women/12.jpg",
+    area: "Phường Phú Mỹ Hưng",
+    phone: "0912345678",
   },
 ];
 
@@ -126,6 +150,12 @@ export default function PoliceList() {
             </p>
             <p>
               <b>Chức vụ:</b> {selectedPolice.position}
+            </p>
+            <p>
+              <b>Vị trí hiện tại:</b> {selectedPolice.area}
+            </p>
+            <p>
+              <b>Số điện thoại:</b> {selectedPolice.phone || "Chưa cập nhật"}
             </p>
             <button
               className="close-btn"
