@@ -36,10 +36,17 @@ function Login({ onLogin }) {
 
       const data = await res.json();
 
+      if (!data.roles || !data.roles.includes("ADMIN")) {
+        throw new Error(
+          "Bạn không có quyền truy cập (chỉ Admin mới được đăng nhập)."
+        );
+      }
+
       // ✅ Lưu token và userId vào sessionStorage
-      sessionStorage.setItem("token", data.token);
       sessionStorage.setItem("userId", data.id);
       sessionStorage.setItem("username", data.username);
+      sessionStorage.setItem("email", data.email);
+      localStorage.setItem("token", data.token);
 
       // ✅ Gọi lại App.js và truyền id để dùng ở Info
       onLogin({ id: data.id });

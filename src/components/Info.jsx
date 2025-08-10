@@ -3,42 +3,64 @@ import "./Info.css";
 
 function Info({ onLogout }) {
   const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    console.log("Token từ localStorage:", token); // 🧪 kiểm tra token
+    const token = localStorage.getItem("token");
+    const id = sessionStorage.getItem("userId");
 
-    if (!token) {
-      console.error("Không tìm thấy token. Hãy đăng nhập lại.");
+    if (!token || !id) {
+      setError("Bạn chưa đăng nhập hoặc phiên đã hết hạn.");
+      setLoading(false);
       return;
     }
 
-    const id = sessionStorage.getItem("userId");
+    console.log("ID:", id);
+    console.log("Token:", token);
+
     fetch(`http://localhost:8087/quet/api/person/${id}`, {
       method: "GET",
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
-        console.log("Status code:", res.status);
         if (!res.ok) {
+          if (res.status === 401)
+            throw new Error("Token không hợp lệ hoặc đã hết hạn");
           throw new Error("Không thể lấy thông tin người dùng");
         }
         return res.json();
       })
       .then((data) => {
-        // if (Array.isArray(data) && data.length > 0) {
-        if (data) {
-          setUserInfo(data); // ✅ Lấy phần tử đầu tiên trong mảng
-        } else {
-          console.error("Dữ liệu người dùng không hợp lệ:", data);
-        }
+        setUserInfo(data);
       })
       .catch((err) => {
         console.error("Lỗi khi lấy thông tin người dùng:", err);
+        setError(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
+
+  if (loading) {
+    return (
+      <div className="profile-bg">
+        <div className="loading-message">Đang tải thông tin...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="profile-bg">
+        <div style={{ color: "red", padding: "20px" }}>{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="profile-bg">
@@ -58,15 +80,15 @@ function Info({ onLogout }) {
               <input value={userInfo?.fullName || ""} readOnly />
             </div>
             <div>
-              <label>Quân hàm</label>
-              <input value="Đại tá" readOnly />
+              <label>Quân hàm - Chức vụ</label>
+              <input value="Đại tá - Trưởng phòng CSGT" readOnly />
             </div>
           </div>
 
           <div className="profile-form-row">
             <div>
-              <label>Chức vụ</label>
-              <input value="Trưởng phòng CSGT" readOnly />
+              <label>Email</label>
+              <input value={sessionStorage.getItem("email") || ""} readOnly />
             </div>
             <div>
               <label>Ngày sinh</label>

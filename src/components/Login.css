@@ -228,7 +228,9 @@
   animation: spin 0.8s linear infinite;
   vertical-align: middle;
 }
-
+.content-right {
+  margin-top: 10
+}
 @keyframes spin {
   to {
     transform: rotate(360deg);

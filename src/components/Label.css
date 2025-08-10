@@ -1,156 +1,125 @@
-/* Sidebar chính */
+/* Sidebar */
 .column {
+  background-color: #1e1e1e;
+  width: 240px;
+  padding-top: 20px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  background-color: #1e1e1e;
-  color: white;
-  height: 100vh;
-  width: 300px;
-  padding: 20px 0;
-  box-sizing: border-box;
-  gap: 24px;
+  align-items: center;
 }
 
-.logo img {
-  width: 130px;
-  height: auto;
-  border-radius: 8px;
+.sidebar-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background-color: white;
+  padding: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Danh sách menu */
-.column ul {
+.sidebar-menu {
+  list-style: none;
   padding: 0;
   margin: 0;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.column li {
-  list-style: none;
-  width: 100%;
-  margin-bottom: 8px;
-}
-
-/* Nút trong sidebar */
-.column button {
-  background-color: transparent;
-  border: none;
-  color: white;
-  padding: 10px 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  width: 100%;
-  font-size: 32px;
-  font-weight: 700;
-  transition: all 0.3s ease;
-  text-align: left;
-  text-transform: capitalize;
-}
-
-.column button:hover {
-  background-color: #333;
-  color: #00ffcc;
-}
-
-.column button.active-tab {
-  color: #00ffcc;
-  font-weight: 800;
-}
-
-/* Nút đăng xuất */
-.profile-logout-btn {
-  margin-top: auto;
-  padding: 10px 0;
-  width: 100%;
-  background: #120444;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.08rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-/* --- Popup overlay nền tối --- */
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+.sidebar-item button {
   display: flex;
   align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-/* --- Nội dung popup --- */
-.popup {
-  background-color: #2a2a2a;
+  gap: 12px;
+  padding: 12px 20px;
+  width: 100%;
+  border: 1px solid #4da6ff;
+  border-radius: 8px;
+  background: none;
   color: white;
-  padding: 30px 40px;
-  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar-item .icon {
+  font-size: 18px;
+  color: #4da6ff;
+}
+
+.sidebar-item button:hover {
+  background-color: #2a2a2a;
+  transform: scale(1.02);
+}
+
+/* Popup */
+.popup {
+  background: #1e1e1e;
+  color: white;
+  padding: 20px 30px; /* 🔹 tăng padding để popup to hơn */
+  border-radius: 12px;
+  width: 400px; /* 🔹 tăng chiều rộng */
   text-align: center;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-  width: 90%;
-  max-width: 400px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  border: 1px solid #4da6ff;
+  font-size: 18px; /* 🔹 chữ to hơn */
 }
 
-/* Tiêu đề popup */
-.popup-content h2 {
-  font-size: 8px;
-  font-weight: 600px;
-  margin-bottom: 1px;
+.popup button {
+  padding: 10px 20px; /* 🔹 nút to hơn */
+  font-size: 16px; /* 🔹 chữ trên nút to hơn */
+  margin: 10px;
 }
-
-/* Câu hỏi xác nhận */
 .popup p {
-  font-size: 30px;
-  margin-bottom: 24px;
-  margin-top: 0px;
+  margin: 0 0 15px; /* Xóa khoảng trắng trên */
+  font-size: 28px; /* Nhỏ hơn một chút */
   font-weight: bold;
 }
 
-/* Các nút trong popup */
 .popup-buttons {
   display: flex;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: center;
+  gap: 12px;
 }
 
 .popup-buttons button {
-  padding: 6px 12px;
-  min-width: 60px;
+  padding: 25px 25px; /* Giảm padding */
   border: none;
-  border-radius: 5px;
-  font-size: 1px; /* 👈 chữ nhỏ lại */
-  font-weight: 500;
-  text-align: center;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  display: flex; /* 👈 để căn giữa */
-  justify-content: center; /* 👈 căn giữa ngang */
-  align-items: center; /* 👈 căn giữa dọc */
+  font-size: 28px; /* Chữ nhỏ vừa */
+  font-weight: bold;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap; /* Giữ chữ trên 1 dòng */
+  min-width: 80px; /* Đủ rộng cho chữ */
+  height: 36px; /* Giảm chiều cao */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
 }
 
-/* Nút xác nhận */
-.popup-buttons .confirm {
-  background-color: #00cc99;
+.popup-buttons button:first-child {
+  background: #e53935;
   color: white;
 }
 
-.popup-buttons .confirm:hover {
-  background-color: #00b386;
-}
-
-/* Nút hủy */
-.popup-buttons .cancel {
-  background-color: #888;
+.popup-buttons button:last-child {
+  background: #4da6ff;
   color: white;
 }
 
-.popup-buttons .cancel:hover {
-  background-color: #666;
+.popup-buttons button:hover {
+  transform: scale(1.05);
+}
+.popup-overlay {
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* ✅ Căn giữa theo chiều dọc */
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 99999;
 }
