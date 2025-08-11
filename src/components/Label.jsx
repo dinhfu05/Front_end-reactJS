@@ -85,7 +85,8 @@ function Column({ onLogout }) {
           >
             Cài đặt
           </TabButton>
-
+        </ul>
+        <div className="sidebar-logout">
           <TabButton
             onselect={() => setShowLogoutPopup(true)}
             icon={<FaSignOutAlt />}
@@ -93,7 +94,7 @@ function Column({ onLogout }) {
           >
             Đăng xuất
           </TabButton>
-        </ul>
+        </div>
       </div>
 
       {showLogoutPopup &&

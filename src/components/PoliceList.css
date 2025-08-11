@@ -21,8 +21,8 @@
   border: 1px solid #ddd;
   border-radius: 12px;
   padding: 15px;
-  text-align: center;
-  width: 160px;
+  text-align: center !important ;
+  width: 180px;
   margin: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -48,13 +48,38 @@
 }
 
 .police-rank {
-  margin: 0;
+  margin: 5px;
   color: #000000;
 }
 
 .police-position {
-  margin: 0;
+  margin: 5px;
   color: #000000;
+  white-space: nowrap;
+  text-align: center; /* Căn giữa */
+  display: block;
+}
+.police-area {
+  margin: 5px;
+  color: #000000;
+  white-space: nowrap;
+  text-align: center; /* Căn giữa */
+  display: block;
+}
+.police-phone {
+  margin: 5px;
+  color: #000000;
+}
+
+.call-police {
+  background: #094d00;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
 }
 
 /* Popup */

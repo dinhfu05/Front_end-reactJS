@@ -1,0 +1,68 @@
+.setting-container {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  color: black; /* ✅ Toàn bộ chữ thành màu đen */
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: black; /* ✅ Tiêu đề màu đen */
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  align-items: center;
+  color: black; /* ✅ Chữ trong setting */
+}
+
+.setting-item label {
+  font-weight: bold;
+  color: black; /* ✅ Label cũng màu đen */
+}
+
+.setting-item select,
+.setting-item input[type="checkbox"] {
+  padding: 5px;
+  font-size: 14px;
+  color: black; /* ✅ Chữ trong select */
+}
+
+.setting-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.save-btn {
+  background: #27ae60;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.logout-btn {
+  background: #e74c3c;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #2ecc71;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
+}

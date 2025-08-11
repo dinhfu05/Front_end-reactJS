@@ -24,7 +24,7 @@ const policeList = [
     id: 3,
     name: "Lê Văn C",
     rank: "Thiếu tá",
-    position: "Cảnh sát điều tra",
+    position: "Cảnh sát giao thông",
     img: "https://randomuser.me/api/portraits/men/3.jpg",
     area: "Phường Tân Định",
     phone: "0903456789",
@@ -33,7 +33,7 @@ const policeList = [
     id: 4,
     name: "Phạm Thị D",
     rank: "Trung úy",
-    position: "Cảnh sát quản lý hành chính",
+    position: "Cảnh sát cơ động",
     img: "https://randomuser.me/api/portraits/women/4.jpg",
     area: "Phường Linh Trung",
     phone: "0904567890",
@@ -42,7 +42,7 @@ const policeList = [
     id: 5,
     name: "Hoàng Văn E",
     rank: "Đại tá",
-    position: "Cảnh sát phòng cháy chữa cháy",
+    position: "Cảnh sát giao thông",
     img: "https://randomuser.me/api/portraits/men/5.jpg",
     area: "Phường Thảo Điền",
     phone: "0905678901",
@@ -51,7 +51,7 @@ const policeList = [
     id: 6,
     name: "Vũ Thị F",
     rank: "Thượng tá",
-    position: "Cảnh sát môi trường",
+    position: "Cảnh sát cơ động",
     img: "https://randomuser.me/api/portraits/women/6.jpg",
     area: "Phường Phú Mỹ",
     phone: "0906789012",
@@ -78,7 +78,7 @@ const policeList = [
     id: 9,
     name: "Phan Văn I",
     rank: "Thiếu tá",
-    position: "Cảnh sát điều tra",
+    position: "Cảnh sát giao thông",
     img: "https://randomuser.me/api/portraits/men/9.jpg",
     area: "Phường Tân Phú",
     phone: "0909012345",
@@ -87,28 +87,10 @@ const policeList = [
     id: 10,
     name: "Đỗ Thị J",
     rank: "Trung úy",
-    position: "Cảnh sát quản lý hành chính",
+    position: "Cảnh sát giao thông",
     img: "https://randomuser.me/api/portraits/women/10.jpg",
     area: "Phường Cát Lái",
     phone: "0910123456",
-  },
-  {
-    id: 11,
-    name: "Trịnh Văn K",
-    rank: "Đại tá",
-    position: "Cảnh sát phòng cháy chữa cháy",
-    img: "https://randomuser.me/api/portraits/men/11.jpg",
-    area: "Phường Phạm Ngũ Lão",
-    phone: "0911234567",
-  },
-  {
-    id: 12,
-    name: "Lâm Thị L",
-    rank: "Thượng úy",
-    position: "Cảnh sát giao thông",
-    img: "https://randomuser.me/api/portraits/women/12.jpg",
-    area: "Phường Phú Mỹ Hưng",
-    phone: "0912345678",
   },
 ];
 
@@ -119,6 +101,13 @@ function PoliceCard({ police, onClick }) {
       <h4 className="police-name">{police.name}</h4>
       <p className="police-rank">{police.rank}</p>
       <p className="police-position">{police.position}</p>
+      <p className="police-area">{police.area}</p>
+      <p className="police-phone">
+        <b>SĐT:</b> {police.phone || "Chưa cập nhật"}
+      </p>
+      <button className="call-police" onClick={() => onClick(police)}>
+        liên hệ ngay
+      </button>
     </div>
   );
 }
@@ -150,12 +139,6 @@ export default function PoliceList() {
             </p>
             <p>
               <b>Chức vụ:</b> {selectedPolice.position}
-            </p>
-            <p>
-              <b>Vị trí hiện tại:</b> {selectedPolice.area}
-            </p>
-            <p>
-              <b>Số điện thoại:</b> {selectedPolice.phone || "Chưa cập nhật"}
             </p>
             <button
               className="close-btn"
