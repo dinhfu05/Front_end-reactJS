@@ -77,6 +77,13 @@ function Column({ onLogout }) {
           >
             Danh sách cảnh sát
           </TabButton>
+          <TabButton
+            onselect={() => navigate("/violations")}
+            icon={<FaUserShield />}
+            isActive={location.pathname === "/violations"}
+          >
+            Danh sách vi phạm
+          </TabButton>
 
           <TabButton
             onselect={() => navigate("/setting")}

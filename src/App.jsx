@@ -11,6 +11,7 @@ import Accident from "./components/Accident";
 import Info from "./components/Info";
 import Setting from "./components/Setting";
 import PoliceList from "./components/PoliceList";
+import ViolationList from "./components/ViolationList";
 import "./App.css";
 
 // Layout hiển thị label ở trên mọi trang
@@ -113,6 +114,20 @@ function App() {
             isLoggedIn ? (
               <MainLayout onLogout={handleLogout}>
                 <PoliceList />
+              </MainLayout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        {/* Trang danh sách biên bản vi phạm */}
+        <Route
+          path="/violations"
+          element={
+            isLoggedIn ? (
+              <MainLayout onLogout={handleLogout}>
+                <ViolationList />
               </MainLayout>
             ) : (
               <Navigate to="/login" />
