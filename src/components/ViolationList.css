@@ -44,7 +44,7 @@
   margin-bottom: 20px;
 }
 .violation-filter__option {
-  font-size: 14px;
+  font-size: 17px;
   cursor: pointer;
 }
 .violation-filter__option input {
@@ -55,7 +55,7 @@
 .violation-table {
   width: 100%;
   border-collapse: collapse;
-  background: #0f172a;
+  background: #ffffff;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -70,7 +70,7 @@
 
 .violation-table th {
   background: #1e293b;
-  color: #f7f7f7;
+  color: #ffffff;
   font-weight: bold;
   border-bottom: 2px solid rgba(56, 189, 248, 0.4);
 }
@@ -78,19 +78,23 @@
 .violation-table tr {
   border-bottom: 1px solid rgba(56, 189, 248, 0.1);
   transition: background 0.25s;
+  font-weight: bold;
 }
 
 .violation-table tr:hover {
   background: rgba(56, 189, 248, 0.08);
+  font-weight: bold;
 }
 
 .violation-table td {
-  color: #f8fafc;
+  color: #000000;
+  font-weight: bold;
 }
 
 /* Màu cho biển số và trạng thái */
 .violation-plate {
-  color: #f6de7f !important;
+  color: #ba9a18 !important;
+  font-weight: bold;
 }
 
 .violation-status {
@@ -107,11 +111,11 @@
 
 .violation-table tr:hover {
   background: rgba(56, 189, 248, 0.3); /* nền sáng hơn */
-  color: white; /* chữ trắng nổi bật */
+  color: rgb(7, 6, 6); /* chữ trắng nổi bật */
   transition: background 0.3s ease, color 0.3s ease;
 }
 .violation-table tr:hover td {
-  color: white; /* Đảm bảo toàn bộ ô trong hàng đổi màu chữ */
+  color: rgb(0, 0, 0); /* Đảm bảo toàn bộ ô trong hàng đổi màu chữ */
 }
 
 /* Loading */
@@ -150,6 +154,7 @@
 
 /* Tiêu đề popup */
 .violation-popup__title {
+  margin-top: 0px;
   font-size: 22px;
   margin-bottom: 14px;
   color: #040606;
