@@ -105,26 +105,22 @@ function PoliceCard({ police, onCardClick, onContact, onNotify }) {
     <div className="police-card" onClick={() => onCardClick(police)}>
       {/* Ảnh cảnh sát */}
       <img src={police.img} alt={police.name} className="police-img" />
-
       {/* Tên cảnh sát */}
       <h4 className="police-name">{police.name}</h4>
-
       {/* Quân hàm */}
       <p className="police-rank">{police.rank}</p>
-
       {/* Chức vụ, lấy từ ngôn ngữ */}
       <p className="police-position">
         {t(`police.position.${police.position}`)}
       </p>
-
       {/* Khu vực làm việc */}
-      <p className="police-area">{police.area}</p>
-
+      <p className="police-area">
+        <b>{t("police.currentLocation")}:</b> {police.area}
+      </p>
       {/* Số điện thoại, nếu không có sẽ hiển thị thông báo chưa cập nhật */}
       <p className="police-phone">
         <b>{t("police.phone")}</b> {police.phone || t("police.phoneNotUpdated")}
       </p>
-
       {/* Hai nút hành động: liên hệ và gửi thông báo */}
       <div className="action-buttons">
         <button
