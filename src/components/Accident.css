@@ -1,26 +1,42 @@
-/* Container bên phải cho Accident */
+/* Container chính cho trang accident */
 .accident {
-  width: 100%; /* Full chiều rộng bên phải */
-  height: 100%; /* Full chiều cao phần content-right */
-  margin-top: 0; /* Bỏ margin thừa */
-  overflow: auto; /* Cuộn nếu bảng dài hoặc rộng */
+  width: 100%;
+  height: 100%;
+  margin-top: 0;
+  overflow: auto;
   background-color: transparent;
 }
 
+/* Container bao quanh bảng */
 .table-container {
-  width: 100%; /* Bảng full chiều rộng */
+  width: 100%;
   height: 100%;
 }
 
-/* Bảng Accident */
+/* Bảng dữ liệu */
 .accident table {
   border-collapse: collapse;
-  width: 100%; /* Full width */
+  width: 100%;
   background-color: var(--card-bg);
   border-radius: 10px;
   overflow: hidden;
 }
 
+/* ID hiển thị trên góc */
+.violation-id-top {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-weight: bold;
+  color: #fff;
+  background: #333;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.95em;
+  z-index: 2;
+}
+
+/* Ô tiêu đề và ô dữ liệu trong bảng */
 .accident th,
 .accident td {
   padding: 12px 16px;
@@ -28,33 +44,37 @@
   border-bottom: 1px solid #333;
 }
 
+/* Ô tiêu đề của bảng */
 .accident th {
   background-color: #2b2b2b;
   color: var(--accent);
 }
 
+/* Ảnh trong ô bảng */
 .accident td img {
   width: 400px;
   height: auto;
   border-radius: 4px;
 }
 
+/* Màu chữ trạng thái mở */
 .status-open {
   color: #00ffcc;
   font-weight: bold;
 }
 
+/* Màu chữ trạng thái đóng */
 .status-closed {
   color: #ff4d4d;
   font-weight: bold;
 }
 
-/* Clickable ID */
+/* ID có thể click */
 .clickable-id {
   font-weight: bold;
 }
 
-/* Modal Overlay */
+/* Overlay nền popup */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -68,7 +88,7 @@
   z-index: 1000;
 }
 
-/* Modal Content */
+/* Nội dung popup */
 .modal-content {
   background-color: var(--modal-bg);
   padding: 20px;
@@ -80,12 +100,14 @@
   animation: popup-fade 0.3s ease;
 }
 
+/* Ảnh trong popup */
 .modal-content img {
   width: 100%;
   border-radius: 8px;
   margin-top: 10px;
 }
 
+/* Nút trong popup */
 .modal-content button {
   margin-top: 15px;
   padding: 8px 16px;
@@ -97,11 +119,12 @@
   color: #fff;
 }
 
+/* Hiệu ứng hover cho nút popup */
 .modal-content button:hover {
   filter: brightness(0.95);
 }
 
-/* Animation */
+/* Animation popup xuất hiện */
 @keyframes popup-fade {
   from {
     transform: scale(0.8);
@@ -111,18 +134,4 @@
     transform: scale(1);
     opacity: 1;
   }
-}
-
-/* Mã biên bản ở góc phải trên của card */
-.violation-id-top {
-  position: absolute;
-  top: 10px;
-  right: 16px;
-  font-weight: bold;
-  color: #fff;
-  background: #333;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.95em;
-  z-index: 2;
 }

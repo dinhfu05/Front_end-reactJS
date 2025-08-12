@@ -12,6 +12,7 @@ import Info from "./components/Info";
 import Setting from "./components/Setting";
 import PoliceList from "./components/PoliceList";
 import ViolationList from "./components/ViolationList";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import "./App.css";
 
 // Layout hiển thị label ở trên mọi trang
@@ -69,8 +70,9 @@ function App() {
   }
 
   return (
-    <Router>
-      <Routes>
+    <LanguageProvider>
+      <Router>
+        <Routes>
         {/* Trang login */}
         <Route
           path="/login"
@@ -152,8 +154,9 @@ function App() {
           path="*"
           element={<Navigate to={isLoggedIn ? "/accident" : "/login"} />}
         />
-      </Routes>
-    </Router>
+              </Routes>
+      </Router>
+    </LanguageProvider>
   );
 }
 

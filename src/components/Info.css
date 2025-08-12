@@ -1,3 +1,4 @@
+/* Container chính chứa sidebar và phần form */
 .profile-form-container {
   background: var(--card-bg);
   border-radius: 10px;
@@ -10,6 +11,7 @@
   overflow: hidden;
 }
 
+/* Sidebar bên trái chứa avatar và thông tin cơ bản */
 .profile-sidebar {
   background: var(--card-bg);
   min-width: 220px;
@@ -21,6 +23,7 @@
   border-right: 1px solid var(--card-border);
 }
 
+/* Ảnh đại diện lớn trong sidebar */
 .profile-avatar-big {
   width: 150px;
   height: 150px;
@@ -31,6 +34,7 @@
   border: 3px solid var(--card-border);
 }
 
+/* Tên người dùng bên dưới avatar */
 .profile-sidebar-name {
   font-weight: bold;
   font-size: 1.15rem;
@@ -39,6 +43,7 @@
   text-align: center;
 }
 
+/* Textarea cho phần mô tả hoặc kinh nghiệm */
 .profile-experience textarea {
   min-width: 200px;
   height: 100px;
@@ -48,6 +53,7 @@
   line-height: 1.6;
 }
 
+/* Thông tin vai trò hoặc chức vụ trong sidebar */
 .profile-sidebar-role {
   color: var(--text);
   font-size: 1rem;
@@ -55,6 +61,7 @@
   text-align: center;
 }
 
+/* Thông tin CCCD hoặc ID trong sidebar */
 .profile-sidebar-cccd {
   color: var(--text);
   font-size: 0.98rem;
@@ -63,10 +70,12 @@
   word-break: break-all;
 }
 
+/* Hiệu ứng hover cho nút đăng xuất */
 .profile-logout-btn:hover {
   background: #120444;
 }
 
+/* Phần chính form và phần mô tả kinh nghiệm */
 .profile-main-form,
 .profile-experience {
   flex: 1;
@@ -76,10 +85,12 @@
   justify-content: flex-start;
 }
 
+/* Viền phải cho phần form chính */
 .profile-main-form {
   border-right: 1px solid var(--card-border);
 }
 
+/* Tiêu đề của form */
 .profile-form-title {
   font-size: 2rem;
   font-weight: bold;
@@ -88,18 +99,21 @@
   text-align: center;
 }
 
+/* Hàng chứa các trường form */
 .profile-form-row {
   display: flex;
   gap: 32px;
   margin-bottom: 18px;
 }
 
+/* Các div con trong hàng form, chia đều không gian */
 .profile-form-row > div {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
+/* Label trong form và phần kinh nghiệm */
 .profile-main-form label,
 .profile-experience label {
   font-size: 1rem;
@@ -108,6 +122,7 @@
   font-weight: 500;
 }
 
+/* Input và textarea style trong form và kinh nghiệm */
 .profile-main-form input,
 .profile-experience input,
 .profile-experience textarea {
@@ -121,16 +136,19 @@
   resize: none;
 }
 
+/* Chiều cao textarea phần kinh nghiệm */
 .profile-experience textarea {
   min-height: 60px;
   max-height: 120px;
 }
 
+/* Căn giữa nội dung bên phải (nếu có) */
 .content-right {
   align-items: center;
   justify-content: center;
 }
 
+/* Responsive: cho màn hình nhỏ, các hàng form xếp dọc */
 @media (max-width: 768px) {
   .profile-form-row {
     flex-direction: column;

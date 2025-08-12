@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { FaBell, FaDesktop, FaEnvelope, FaCheck, FaPlus } from "react-icons/fa";
+import { FaCheck, FaDesktop, FaEnvelope, FaBell } from "react-icons/fa";
 import { FiSun, FiMoon } from "react-icons/fi";
+import { useLanguageContext } from "../contexts/LanguageContext";
 import "./Setting.css";
 
+// Mảng màu accent để người dùng chọn
 const ACCENT_PRESETS = [
   "#2563eb",
   "#60a5fa",
@@ -19,159 +21,154 @@ const ACCENT_PRESETS = [
 ];
 
 function Setting({ onLogout }) {
-  // Trạng thái hiện đang áp dụng (persisted)
+  // Lấy ngôn ngữ hiện tại và hàm đổi ngôn ngữ từ context
+  const { currentLanguage, changeLanguage, t: tCurrent } = useLanguageContext();
+
+  // State lưu theme, accent lấy từ localStorage hoặc mặc định
   const [currentTheme, setCurrentTheme] = useState(
     () => localStorage.getItem("theme") || "dark"
   );
   const [currentAccent, setCurrentAccent] = useState(
     () => localStorage.getItem("accent") || "#2b59c3"
   );
-  const [currentLanguage, setCurrentLanguage] = useState(
-    () => localStorage.getItem("lang") || "vi"
-  );
 
-  // Bản nháp (chỉ áp dụng khi Lưu)
+  // State giữ các thay đổi tạm thời trong form
   const [draftTheme, setDraftTheme] = useState(currentTheme);
   const [draftAccent, setDraftAccent] = useState(currentAccent);
   const [draftLanguage, setDraftLanguage] = useState(currentLanguage);
+
+  // Các tùy chọn thông báo
   const [notifyPush, setNotifyPush] = useState(true);
   const [notifyEmail, setNotifyEmail] = useState(false);
   const [notifySms, setNotifySms] = useState(false);
+
+  // Trạng thái đã lưu thành công hay chưa
   const [hasSaved, setHasSaved] = useState(false);
 
-  // Áp dụng trạng thái hiện tại một lần khi mở trang
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", currentTheme);
-    document.documentElement.style.setProperty("--accent", currentAccent);
-  }, []);
-
-  // Preview theo bản nháp: áp dụng ngay nhưng KHÔNG lưu
+  // Cập nhật thuộc tính theme và accent lên document khi draft thay đổi
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", draftTheme);
-    document.body && document.body.setAttribute("data-theme", draftTheme);
-  }, [draftTheme]);
-
-  useEffect(() => {
     document.documentElement.style.setProperty("--accent", draftAccent);
-    document.body && document.body.style.setProperty("--accent", draftAccent);
-  }, [draftAccent]);
+  }, [draftTheme, draftAccent]);
 
-  // Nếu rời trang mà chưa Lưu, khôi phục theme hiện tại
+  // Đồng bộ draftLanguage với currentLanguage khi currentLanguage thay đổi
   useEffect(() => {
-    return () => {
-      if (!hasSaved) {
-        document.documentElement.setAttribute("data-theme", currentTheme);
-        document.documentElement.style.setProperty("--accent", currentAccent);
-      }
-    };
-  }, [currentTheme, currentAccent, hasSaved]);
+    setDraftLanguage(currentLanguage);
+  }, [currentLanguage]);
 
+  // Xử lý khi người dùng chọn ngôn ngữ
+  const handleSelectLanguage = (lang) => {
+    setDraftLanguage(lang);
+    changeLanguage(lang);
+  };
+
+  // Xử lý lưu cài đặt: cập nhật state chính, lưu vào localStorage và thông báo
   const handleSave = () => {
-    // Lưu và áp dụng giao diện từ bản nháp
     setCurrentTheme(draftTheme);
     setCurrentAccent(draftAccent);
-    setCurrentLanguage(draftLanguage);
-
-    document.documentElement.setAttribute("data-theme", draftTheme);
-    document.body && document.body.setAttribute("data-theme", draftTheme);
-    document.documentElement.style.setProperty("--accent", draftAccent);
-    document.body && document.body.style.setProperty("--accent", draftAccent);
 
     localStorage.setItem("theme", draftTheme);
     localStorage.setItem("accent", draftAccent);
     localStorage.setItem("lang", draftLanguage);
 
     setHasSaved(true);
-    alert("Đã lưu cài đặt thành công!");
+    alert(tCurrent("actions.saveSuccess"));
   };
 
+  // Reset tất cả về mặc định (dark theme, accent mặc định, thông báo)
   const resetToDefault = () => {
     setDraftTheme("dark");
     setDraftAccent("#2b59c3");
-    setDraftLanguage("vi");
+
     setNotifyPush(true);
     setNotifyEmail(false);
     setNotifySms(false);
   };
 
+  // Hủy các thay đổi hiện tại, khôi phục về giá trị lưu trong state chính
   const cancelChanges = () => {
     setDraftTheme(currentTheme);
     setDraftAccent(currentAccent);
     setDraftLanguage(currentLanguage);
-    // Khôi phục ngay preview về trạng thái hiện tại
-    document.documentElement.setAttribute("data-theme", currentTheme);
-    document.documentElement.style.setProperty("--accent", currentAccent);
+    changeLanguage(currentLanguage);
     setHasSaved(false);
   };
 
   return (
     <div className="setting-page">
+      {/* Phần giới thiệu và tiêu đề */}
       <div className="setting-hero">
-        <h1>Cài đặt giao diện</h1>
-        <p>
-          Tùy biến trải nghiệm của bạn: chủ đề, màu nhấn, thông báo và ngôn ngữ.
-        </p>
+        <h1>{tCurrent("settings.title")}</h1>
+        <p>{tCurrent("settings.subtitle")}</p>
       </div>
 
+      {/* Lưới các phần cấu hình */}
       <div className="setting-grid">
-        {/* Theme */}
+        {/* Phần chọn theme */}
         <section className="setting-card">
           <div className="setting-card__header">
-            <h2>Chủ đề</h2>
-            <span className="setting-card__subtitle">Áp dụng khi bấm Lưu</span>
+            <h2>{tCurrent("theme.title")}</h2>
+            <span className="setting-card__subtitle">
+              {tCurrent("theme.subtitle")}
+            </span>
           </div>
           <div className="theme-toggle">
+            {/* Nút chọn Light theme */}
             <button
               className={`theme-toggle__btn ${
                 draftTheme === "light" ? "active" : ""
               }`}
               onClick={() => setDraftTheme("light")}
             >
-              <FiSun /> <span>Light</span>
+              <FiSun /> <span>{tCurrent("theme.light")}</span>
             </button>
+            {/* Nút chọn Dark theme */}
             <button
               className={`theme-toggle__btn ${
                 draftTheme === "dark" ? "active" : ""
               }`}
               onClick={() => setDraftTheme("dark")}
             >
-              <FiMoon /> <span>Dark</span>
+              <FiMoon /> <span>{tCurrent("theme.dark")}</span>
             </button>
           </div>
         </section>
 
-        {/* Accent color */}
+        {/* Phần chọn màu accent */}
         <section className="setting-card">
           <div className="setting-card__header">
-            <h2>Màu nhấn</h2>
+            <h2>{tCurrent("accent.title")}</h2>
             <span className="setting-card__subtitle">
-              Chọn màu nổi bật cho hệ thống
+              {tCurrent("accent.subtitle")}
             </span>
           </div>
           <div className="accent-swatches">
+            {/* Hiển thị từng màu trong ACCENT_PRESETS để chọn */}
             {ACCENT_PRESETS.map((c) => (
               <button
                 key={c}
                 className={`accent-swatch ${draftAccent === c ? "active" : ""}`}
                 style={{ background: c }}
                 onClick={() => setDraftAccent(c)}
-                aria-label={`Chọn màu ${c}`}
+                aria-label={`${tCurrent("accent.select")} ${c}`}
               >
+                {/* Hiển thị icon check nếu màu đang chọn */}
                 {draftAccent === c && <FaCheck />}
               </button>
             ))}
           </div>
         </section>
 
-        {/* Notifications */}
+        {/* Phần thông báo */}
         <section className="setting-card">
           <div className="setting-card__header">
-            <h2>Thông báo</h2>
+            <h2>{tCurrent("notifications.title")}</h2>
             <span className="setting-card__subtitle">
-              Chọn cách nhận thông báo
+              {tCurrent("notifications.subtitle")}
             </span>
           </div>
           <div className="toggle-list">
+            {/* Toggle thông báo Push */}
             <label className="toggle">
               <input
                 type="checkbox"
@@ -180,9 +177,10 @@ function Setting({ onLogout }) {
               />
               <span className="toggle__slider"></span>
               <span className="toggle__label">
-                <FaDesktop /> Thông báo đẩy
+                <FaDesktop /> {tCurrent("notifications.push")}
               </span>
             </label>
+            {/* Toggle thông báo Email */}
             <label className="toggle">
               <input
                 type="checkbox"
@@ -191,9 +189,10 @@ function Setting({ onLogout }) {
               />
               <span className="toggle__slider"></span>
               <span className="toggle__label">
-                <FaEnvelope /> Email
+                <FaEnvelope /> {tCurrent("notifications.email")}
               </span>
             </label>
+            {/* Toggle thông báo SMS */}
             <label className="toggle">
               <input
                 type="checkbox"
@@ -202,39 +201,55 @@ function Setting({ onLogout }) {
               />
               <span className="toggle__slider"></span>
               <span className="toggle__label">
-                <FaBell /> SMS
+                <FaBell /> {tCurrent("notifications.sms")}
               </span>
             </label>
           </div>
         </section>
 
-        {/* Language */}
+        {/* Phần chọn ngôn ngữ */}
         <section className="setting-card">
           <div className="setting-card__header">
-            <h2>Ngôn ngữ</h2>
-            <span className="setting-card__subtitle">Language</span>
+            <h2>{tCurrent("language.title")}</h2>
+            <span className="setting-card__subtitle">
+              {tCurrent("language.subtitle")}
+            </span>
           </div>
-          <div className="field">
-            <select
-              value={draftLanguage}
-              onChange={(e) => setDraftLanguage(e.target.value)}
-            >
-              <option value="vi">Tiếng Việt</option>
-              <option value="en">English</option>
-            </select>
+          <div className="language-switcher">
+            <div className="language-switcher__buttons">
+              {/* Nút chọn tiếng Việt */}
+              <button
+                className={`language-btn ${
+                  draftLanguage === "vi" ? "active" : ""
+                }`}
+                onClick={() => handleSelectLanguage("vi")}
+              >
+                🇻🇳 {tCurrent("language.vietnamese")}
+              </button>
+              {/* Nút chọn tiếng Anh */}
+              <button
+                className={`language-btn ${
+                  draftLanguage === "en" ? "active" : ""
+                }`}
+                onClick={() => handleSelectLanguage("en")}
+              >
+                🇺🇸 {tCurrent("language.english")}
+              </button>
+            </div>
           </div>
         </section>
       </div>
 
+      {/* Các nút hành động phía dưới: reset, hủy, lưu */}
       <div className="setting-actions">
         <button className="btn btn-secondary" onClick={resetToDefault}>
-          Khôi phục mặc định
+          {tCurrent("actions.reset")}
         </button>
         <button className="btn" onClick={cancelChanges}>
-          Hủy thay đổi
+          {tCurrent("actions.cancel")}
         </button>
         <button className="btn btn-primary" onClick={handleSave}>
-          Lưu thay đổi
+          {tCurrent("actions.save")}
         </button>
       </div>
     </div>

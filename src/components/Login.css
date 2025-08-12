@@ -1,3 +1,4 @@
+/* Nền background cố định full màn hình */
 .background {
   position: fixed;
   top: 0;
@@ -11,12 +12,14 @@
   background-size: cover;
 }
 
+/* Navbar và modal login để hiển thị trên nền */
 .navbar,
 .login-modal {
   position: relative;
   z-index: 1;
 }
 
+/* Thanh navbar chính */
 .navbar {
   top: 20px;
   display: flex;
@@ -30,6 +33,8 @@
   border-radius: 16px;
   margin: 0 auto;
 }
+
+/* Logo navbar */
 .navbar-logo {
   height: 60px;
   width: 60px;
@@ -39,6 +44,7 @@
   display: block;
 }
 
+/* Hiệu ứng hover cho logo */
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
@@ -46,6 +52,7 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Animation xoay logo */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -55,12 +62,14 @@
   }
 }
 
+/* Animation khi không yêu cầu giảm chuyển động */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
 }
 
+/* Nút đăng nhập */
 .login-btn {
   position: relative;
   overflow: hidden;
@@ -75,6 +84,7 @@
   transition: color 0.2s;
 }
 
+/* Hiệu ứng nền trắng trượt khi hover nút đăng nhập */
 .login-btn::before {
   content: "";
   position: absolute;
@@ -95,6 +105,8 @@
 .login-btn:hover {
   color: #0a1e32;
 }
+
+/* Hộp đăng nhập modal */
 .login-modal {
   position: fixed;
   top: 50%;
@@ -112,7 +124,7 @@
   border: none;
 }
 
-/* Avatar tròn lớn */
+/* Avatar trong modal đăng nhập */
 .login-avatar {
   width: 110px;
   height: 110px;
@@ -130,7 +142,7 @@
   color: #fff;
 }
 
-/* Tiêu đề */
+/* Tiêu đề modal đăng nhập */
 .login-modal h2 {
   margin-bottom: 32px;
   background: none;
@@ -142,7 +154,7 @@
   padding: 0;
 }
 
-/* Ô nhập có icon */
+/* Nhóm input (icon + input) */
 .input-group {
   display: flex;
   align-items: center;
@@ -169,7 +181,7 @@
   color: #b8c6d1;
 }
 
-/* Options ngang */
+/* Các tùy chọn checkbox và link */
 .options {
   display: flex;
   justify-content: space-between;
@@ -189,7 +201,7 @@
   font-size: 0.98rem;
 }
 
-/* Nút login bo góc, nằm dưới popup */
+/* Nút submit trong modal */
 .submit-btn {
   width: 100%;
   padding: 12px 0;
@@ -210,6 +222,7 @@
   color: #fff;
 }
 
+/* Danh sách nav trong navbar */
 .navbar ul {
   display: flex;
   gap: 32px;
@@ -218,6 +231,7 @@
   padding: 0;
 }
 
+/* Spinner loading */
 .spinner {
   display: inline-block;
   width: 24px;
@@ -228,9 +242,52 @@
   animation: spin 0.8s linear infinite;
   vertical-align: middle;
 }
+
+/* Content bên phải (chỗ chưa rõ margin-top bị thiếu đơn vị) */
 .content-right {
   margin-top: 10;
 }
+
+/* Nút chuyển ngôn ngữ */
+.lang-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 16px;
+  display: flex;
+  align-items: center;
+  outline: none;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.lang-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.lang-btn img {
+  width: 28px;
+  height: 18px;
+  border-radius: 3px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+  display: block;
+}
+
+.lang-btn:hover img {
+  transform: scale(1.1);
+}
+
+/* Mã ngôn ngữ bên cạnh cờ */
+.lang-code {
+  margin-left: 6px;
+  text-transform: uppercase;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+/* Animation quay spinner */
 @keyframes spin {
   to {
     transform: rotate(360deg);

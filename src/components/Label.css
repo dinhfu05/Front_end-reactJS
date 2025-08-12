@@ -1,13 +1,15 @@
+/* Sidebar chính: nền tím, rộng 240px, cao full màn, dàn theo cột */
 .column {
-  background-color: #390483 !important; /* Giữ 1 màu cố định cho sidebar */
+  background-color: #390483 !important;
   width: 240px;
   padding-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh; /* ✅ full màn hình */
+  height: 100vh;
 }
 
+/* Menu sidebar: không dấu đầu dòng, dàn cột, khoảng cách giữa mục */
 .sidebar-menu {
   list-style: none;
   padding: 0;
@@ -16,15 +18,17 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  flex-grow: 1; /* ✅ chiếm hết khoảng trống để đẩy logout xuống cuối */
+  flex-grow: 1;
 }
 
+/* Khu vực nút đăng xuất: đặt cuối sidebar, có margin dưới */
 .sidebar-logout {
-  margin-top: auto; /* ✅ luôn ở cuối */
+  margin-top: auto;
   width: 100%;
   margin-bottom: 30px;
 }
 
+/* Logo sidebar: kích thước nhỏ, bo tròn, nền trắng, padding, bóng */
 .sidebar-logo {
   width: 40px;
   height: 40px;
@@ -35,6 +39,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Nút menu: căn trái, chữ trắng, icon cách chữ 12px, full rộng */
 .sidebar-item button {
   display: flex;
   align-items: center;
@@ -47,35 +52,38 @@
   color: #ffffff !important;
 }
 
-/* Nút icon chuyển theme */
+/* Nút chuyển theme: căn giữa icon, padding vừa phải */
 .theme-toggle-btn {
   justify-content: center !important;
   align-items: center !important;
   padding: 10px 12px !important;
 }
+
+/* Icon trong nút chuyển theme: cỡ 20px */
 .theme-toggle-btn .icon {
   font-size: 20px;
 }
 
+/* Icon menu: cỡ 18px, màu đen */
 .sidebar-item .icon {
   font-size: 18px;
   color: rgb(0, 0, 0);
 }
 
-/* Khi hover */
+/* Hiệu ứng hover nút menu: nền sáng hơn, phóng to nhẹ, viền tối */
 .sidebar-item button:hover {
-  background-color: #c6c5c5 !important; /* dịu cho dark, nhẹ cho light */
-  color: #000000 !important;
+  background-color: #c6c5c5 !important;
   transform: scale(1.02);
   border-color: #090909;
 }
 
+/* Nút menu active: nền trắng, chữ đen */
 .sidebar-item.active button {
   background-color: #ffffff !important;
   color: #000000 !important;
 }
 
-/* Popup Overlay */
+/* Nền mờ phủ toàn màn, căn giữa popup, z-index cao */
 .popup-overlay {
   position: fixed;
   inset: 0;
@@ -87,7 +95,7 @@
   animation: fadeIn 0.2s ease-in-out;
 }
 
-/* Popup Box */
+/* Hộp popup: nền modal, bo góc, padding, bóng đổ, animation */
 .popup {
   background: var(--modal-bg);
   color: var(--text);
@@ -100,6 +108,7 @@
   animation: scaleIn 0.25s ease-in-out;
 }
 
+/* Tiêu đề popup: font lớn, đậm, margin dưới */
 .popup p {
   margin-top: 0px !important;
   margin-bottom: 20px;
@@ -107,15 +116,16 @@
   font-weight: bold;
 }
 
-/* Buttons */
+/* Nút trong popup: nằm ngang, cách đều nhau */
 .popup-buttons {
   display: flex;
   justify-content: center;
   gap: 12px;
 }
 
+/* Nút popup: bo góc, font lớn, có hiệu ứng hover phóng to */
 .popup-buttons button {
-  padding: 20px 20px;
+  padding: 10px 20px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -123,24 +133,27 @@
   font-weight: bold;
   transition: background 0.2s, transform 0.15s;
   min-width: 110px;
-  width: 120px; /* ✅ Đảm bảo nút có chiều rộng nhất định */
+  width: 120px;
 }
 
+/* Nút xác nhận: nền đỏ, chữ trắng */
 .popup-buttons button:first-child {
   background: #ff0000;
   color: white;
 }
 
+/* Nút hủy: màu chủ đạo, chữ trắng */
 .popup-buttons button:last-child {
   background: var(--primary);
   color: white;
 }
 
+/* Hiệu ứng hover nút popup: phóng to nhẹ */
 .popup-buttons button:hover {
   transform: scale(1.05);
 }
 
-/* Animations */
+/* Animation mờ dần khi hiện popup */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -150,6 +163,7 @@
   }
 }
 
+/* Animation phóng to khi hiện popup */
 @keyframes scaleIn {
   from {
     transform: scale(0.95);

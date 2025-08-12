@@ -1,11 +1,13 @@
+/* Container chính của trang Setting, bố cục dọc, căn giữa */
 .setting-page {
   display: flex;
   flex-direction: column;
   gap: 24px;
   color: var(--text);
-  align-items: center; /* căn giữa toàn bộ nội dung */
+  align-items: center;
 }
 
+/* Phần header giới thiệu phía trên */
 .setting-hero {
   background: linear-gradient(
     135deg,
@@ -16,7 +18,7 @@
   border-radius: 16px;
   padding: 18px 22px;
   width: 100%;
-  max-width: 1000px; /* giới hạn chiều rộng và căn giữa theo .setting-page */
+  max-width: 1000px;
 }
 .setting-hero h1 {
   margin: 0 0 6px 0;
@@ -26,21 +28,24 @@
   opacity: 0.85;
 }
 
+/* Lưới 2 cột cho các phần Setting */
 .setting-grid {
   display: grid;
-  gap: 24px; /* giãn cách các ô */
-  grid-template-columns: repeat(2, minmax(320px, 1fr)); /* 2 ô trên, 2 ô dưới */
-  justify-content: center; /* căn giữa các ô */
+  gap: 24px;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  justify-content: center;
   width: 100%;
   max-width: 1000px;
 }
 
+/* Responsive: khi màn hình nhỏ hơn 768px thì chuyển sang 1 cột */
 @media (max-width: 768px) {
   .setting-grid {
-    grid-template-columns: 1fr; /* mobile: xếp 1 cột */
+    grid-template-columns: 1fr;
   }
 }
 
+/* Mỗi card setting - box nền trắng, bo góc, đổ bóng */
 .setting-card {
   width: 300px;
   background: var(--card-bg);
@@ -49,23 +54,29 @@
   padding: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
+
+/* Header của mỗi card, dùng flex để căn đều */
 .setting-card__header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   margin-bottom: 12px;
 }
+
+/* Chữ mô tả nhỏ bên dưới header */
 .setting-card__subtitle {
   font-size: 12px;
   opacity: 0.75;
 }
 
-/* Theme cards */
+/* Danh sách các theme card nếu dùng dạng card */
 .theme-cards {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
+
+/* Card theme riêng biệt */
 .theme-card {
   position: relative;
   display: flex;
@@ -78,27 +89,39 @@
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
+
+/* Hiệu ứng hover nhẹ cho theme card */
 .theme-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   border-color: var(--accent);
 }
+
+/* Card theme đang được chọn */
 .theme-card.selected {
   border-color: var(--accent);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
+
+/* Icon trong theme card */
 .theme-card__icon {
   font-size: 20px;
 }
+
+/* Tiêu đề trong theme card */
 .theme-card__title {
   font-weight: 600;
 }
+
+/* Icon check đánh dấu theme đang chọn */
 .theme-card__check {
   position: absolute;
   top: 8px;
   right: 8px;
   color: var(--accent);
 }
+
+/* Preview nhỏ cho theme */
 .theme-preview {
   margin-left: auto;
   width: 70px;
@@ -114,7 +137,7 @@
   background: linear-gradient(180deg, #0f172a 50%, #1f2937 50%);
 }
 
-/* Theme toggle buttons (Light/Dark) */
+/* Toggle theme (Light/Dark) dạng nút */
 .theme-toggle {
   display: inline-flex;
   gap: 8px;
@@ -131,17 +154,21 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
+/* Nút toggle đang active */
 .theme-toggle__btn.active {
   background: var(--accent);
   color: #fff;
   border-color: transparent;
 }
+
+/* Hover nút toggle */
 .theme-toggle__btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
-/* Accent color */
+/* Màu accent để chọn, dạng vòng tròn */
 .accent-swatches {
   display: flex;
   flex-wrap: wrap;
@@ -160,30 +187,39 @@
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
+
+/* Accent màu đang chọn */
 .accent-swatch.active {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px rgba(77, 166, 255, 0.2);
 }
+
+/* Hover vòng chọn màu accent */
 .accent-swatch:hover {
   transform: scale(1.05);
 }
-/* bỏ nhóm custom color */
 
-/* Toggle switches */
+/* Danh sách toggle thông báo (checkbox) */
 .toggle-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
+/* Mỗi toggle riêng biệt */
 .toggle {
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 10px;
 }
+
+/* Ẩn checkbox mặc định */
 .toggle input {
   display: none;
 }
+
+/* Thanh trượt custom cho toggle */
 .toggle__slider {
   position: relative;
   width: 44px;
@@ -192,6 +228,8 @@
   border-radius: 999px;
   transition: background 0.2s ease;
 }
+
+/* Nút tròn bên trong thanh trượt toggle */
 .toggle__slider::after {
   content: "";
   position: absolute;
@@ -203,12 +241,18 @@
   border-radius: 50%;
   transition: transform 0.2s ease;
 }
+
+/* Khi toggle checked - đổi màu nền thanh trượt */
 .toggle input:checked + .toggle__slider {
   background: var(--accent);
 }
+
+/* Khi toggle checked - dịch chuyển nút tròn sang bên phải */
 .toggle input:checked + .toggle__slider::after {
   transform: translateX(20px);
 }
+
+/* Label của toggle, chứa icon và text */
 .toggle__label {
   opacity: 0.9;
   display: inline-flex;
@@ -216,7 +260,7 @@
   align-items: center;
 }
 
-/* Field */
+/* Select input trong form */
 .field select {
   width: 100%;
   padding: 10px 12px;
@@ -226,18 +270,22 @@
   border-radius: 10px;
 }
 
-/* Actions */
+/* Hộp chứa các nút hành động dưới cùng */
 .setting-actions {
   display: flex;
   align-items: center;
-  justify-content: center; /* căn giữa hàng nút */
+  justify-content: center;
   gap: 16px;
   margin-top: 8px;
   flex-wrap: wrap;
 }
+
+/* Khoảng cách linh hoạt giữa nút */
 .setting-actions .spacer {
   flex: 1;
 }
+
+/* Các nút chung */
 .btn {
   padding: 10px 14px;
   border: none;
@@ -245,20 +293,83 @@
   cursor: pointer;
   font-weight: 600;
 }
+
+/* Nút màu chính */
 .btn-primary {
   background: var(--accent);
   color: #fff;
 }
+
+/* Nút màu phụ */
 .btn-secondary {
   background: #64748b;
   color: #fff;
 }
+
+/* Nút màu nguy hiểm (ví dụ xóa) */
 .btn-danger {
   background: #ef4444;
   color: #fff;
 }
+
+/* Hiệu ứng hover cho nút */
 .btn:hover {
   filter: brightness(1.05);
   transform: translateY(-1px);
   transition: all 0.2s;
+}
+
+/* Bộ chọn ngôn ngữ */
+.language-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: transparent;
+  border-radius: 8px;
+}
+
+/* Nút nhóm chọn ngôn ngữ */
+.language-switcher__buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Nút chọn ngôn ngữ */
+.language-btn {
+  display: flex;
+  width: 150px;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--content-bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  font-weight: 500;
+  min-width: 120px;
+  justify-content: center;
+}
+
+/* Hover nút chọn ngôn ngữ */
+.language-btn:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* Nút ngôn ngữ đang chọn */
+.language-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+/* Nút không active khi hover */
+.language-btn:not(.active):hover {
+  background: var(--content-bg);
+  opacity: 0.9;
 }

@@ -10,8 +10,10 @@ import {
   FaSun,
   FaMoon,
 } from "react-icons/fa";
+import { useLanguageContext } from "../contexts/LanguageContext";
 import "./Label.css";
 
+// Component nút tab sidebar
 export function TabButton({
   to,
   onselect,
@@ -32,23 +34,23 @@ export function TabButton({
   );
 }
 
+// Component sidebar chính
 function Column({ onLogout }) {
-  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const { t } = useLanguageContext(); // Hàm dịch ngôn ngữ
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false); // Hiện popup logout
   const [theme, setTheme] = useState(
     () => localStorage.getItem("theme") || "dark"
-  );
-  const navigate = useNavigate();
-  const location = useLocation();
+  ); // Theme tối/sáng
+  const navigate = useNavigate(); // Điều hướng trang
+  const location = useLocation(); // Lấy URL hiện tại
 
+  // Cập nhật theme vào DOM và lưu localStorage khi thay đổi
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-  };
-
+  // Xác nhận logout: xóa token, đóng popup, gọi callback, chuyển trang login
   const handleConfirmLogout = () => {
     localStorage.removeItem("token");
     setShowLogoutPopup(false);
@@ -56,6 +58,7 @@ function Column({ onLogout }) {
     navigate("/login");
   };
 
+  // Hủy logout, đóng popup
   const handleCancelLogout = () => {
     setShowLogoutPopup(false);
   };
@@ -63,17 +66,19 @@ function Column({ onLogout }) {
   return (
     <>
       <div className="column">
+        {/* Logo sidebar */}
         <div className="logo">
           <img className="sidebar-logo" src="/ic_logo.png" alt="Logo" />
         </div>
 
+        {/* Menu sidebar */}
         <ul className="sidebar-menu">
           <TabButton
             onselect={() => navigate("/info")}
             icon={<FaInfoCircle />}
             isActive={location.pathname === "/info"}
           >
-            Thông tin
+            {t("navigation.info")}
           </TabButton>
 
           <TabButton
@@ -81,7 +86,7 @@ function Column({ onLogout }) {
             icon={<FaCarCrash />}
             isActive={location.pathname === "/accident"}
           >
-            Tai nạn
+            {t("navigation.accident")}
           </TabButton>
 
           <TabButton
@@ -89,14 +94,15 @@ function Column({ onLogout }) {
             icon={<FaUserShield />}
             isActive={location.pathname === "/PoliceList"}
           >
-            Danh sách cảnh sát
+            {t("navigation.policeList")}
           </TabButton>
+
           <TabButton
             onselect={() => navigate("/violations")}
             icon={<FaUserShield />}
             isActive={location.pathname === "/violations"}
           >
-            Danh sách vi phạm
+            {t("navigation.violationList")}
           </TabButton>
 
           <TabButton
@@ -104,28 +110,35 @@ function Column({ onLogout }) {
             icon={<FaCog />}
             isActive={location.pathname === "/setting"}
           >
-            Cài đặt
+            {t("navigation.settings")}
           </TabButton>
         </ul>
+
+        {/* Nút logout */}
         <div className="sidebar-logout">
           <TabButton
             onselect={() => setShowLogoutPopup(true)}
             icon={<FaSignOutAlt />}
             isActive={false}
           >
-            Đăng xuất
+            {t("navigation.logout")}
           </TabButton>
         </div>
       </div>
 
+      {/* Popup xác nhận logout */}
       {showLogoutPopup &&
         ReactDOM.createPortal(
           <div className="popup-overlay">
             <div className="popup">
-              <p>Bạn có chắc chắn muốn đăng xuất không?</p>
+              <p>{t("logout.confirmMessage")}</p>
               <div className="popup-buttons">
-                <button onClick={handleConfirmLogout}>Xác nhận</button>
-                <button onClick={handleCancelLogout}>Hủy</button>
+                <button onClick={handleConfirmLogout}>
+                  {t("logout.confirm")}
+                </button>
+                <button onClick={handleCancelLogout}>
+                  {t("logout.cancel")}
+                </button>
               </div>
             </div>
           </div>,

@@ -1,10 +1,16 @@
+// Component quản lý danh sách tai nạn, hiển thị bảng và popup chi tiết tai nạn
+
 import { useState } from "react";
+import { useLanguageContext } from "../contexts/LanguageContext";
 import data from "../../data";
 import "./Accident.css";
 
 function Accident() {
+  const { t } = useLanguageContext();
+  // State lưu tai nạn được chọn để hiển thị chi tiết
   const [selectedAccident, setSelectedAccident] = useState(null);
 
+  // Xử lý click vào 1 dòng trong bảng để mở popup chi tiết
   const handleRowClick = (item) => {
     setSelectedAccident(item);
   };
@@ -12,18 +18,20 @@ function Accident() {
   return (
     <div className="accident">
       <div className="table-container">
+        {/* Bảng danh sách tai nạn */}
         <table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Road</th>
-              <th>Time</th>
-              <th>Image</th>
-              <th>User</th>
-              <th>Status</th>
+              <th>{t("accident.table.id")}</th>
+              <th>{t("accident.table.road")}</th>
+              <th>{t("accident.table.time")}</th>
+              <th>{t("accident.table.image")}</th>
+              <th>{t("accident.table.user")}</th>
+              <th>{t("accident.table.status")}</th>
             </tr>
           </thead>
           <tbody>
+            {/* Render từng dòng tai nạn */}
             {data.map((item) => (
               <tr key={item.id} onClick={() => handleRowClick(item)}>
                 <td className="clickable-id">{item.id}</td>
@@ -38,38 +46,45 @@ function Accident() {
                     item.status === "Open" ? "status-open" : "status-closed"
                   }
                 >
-                  {item.status}
+                  {/* Hiển thị trạng thái với ngôn ngữ */}
+                  {item.status === "Open"
+                    ? t("accident.status.open")
+                    : t("accident.status.closed")}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* Popup Modal */}
+        {/* Popup chi tiết tai nạn khi 1 dòng được chọn */}
         {selectedAccident && (
           <div
             className="modal-overlay"
             onClick={() => setSelectedAccident(null)}
           >
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <h2>Chi tiết tai nạn</h2>
+              <h2>{t("accident.detailTitle")}</h2>
               <p>
-                <strong>ID:</strong> {selectedAccident.id}
+                <strong>{t("accident.table.id")}:</strong> {selectedAccident.id}
               </p>
               <p>
-                <strong>Đường:</strong> {selectedAccident.road}
+                <strong>{t("accident.road")}</strong> {selectedAccident.road}
               </p>
               <p>
-                <strong>Thời gian:</strong> {selectedAccident.time}
+                <strong>{t("accident.time")}</strong> {selectedAccident.time}
               </p>
               <p>
-                <strong>Người báo cáo:</strong> {selectedAccident.user}
+                <strong>{t("accident.reporter")}</strong>{" "}
+                {selectedAccident.user}
               </p>
               <p>
-                <strong>Trạng thái:</strong> {selectedAccident.status}
+                <strong>{t("accident.status")}</strong>{" "}
+                {selectedAccident.status}
               </p>
               <img src={selectedAccident.image} alt="Accident Detail" />
-              <button onClick={() => setSelectedAccident(null)}>Đóng</button>
+              <button onClick={() => setSelectedAccident(null)}>
+                {t("accident.close")}
+              </button>
             </div>
           </div>
         )}
