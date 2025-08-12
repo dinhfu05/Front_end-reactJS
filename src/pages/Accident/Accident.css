@@ -1,137 +1,297 @@
-/* Container chính cho trang accident */
+/* ============ ACCIDENT (Dark, clean) ============ */
+:root {
+  --bg: #0f1115;
+  --card: #171a21;
+  --row: #121723;
+  --row-alt: #0f1420;
+  --border: #232a3a;
+  --text: #e9eef7;
+  --muted: #9aa6bd;
+  --accent: #00e6b8; /* xanh ngọc chủ đạo */
+  --warn: #f59e0b;
+  --ok: #22c55e;
+  --err: #ef4444;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* Container chính */
 .accident {
   width: 100%;
   height: 100%;
-  margin-top: 0;
-  overflow: auto;
-  background-color: transparent;
+  padding: 16px;
+  color: var(--text);
+  background: transparent;
+  font: 500 15px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI,
+    Roboto, Arial;
 }
 
-/* Container bao quanh bảng */
 .table-container {
   width: 100%;
-  height: 100%;
 }
 
-/* Bảng dữ liệu */
+/* ============ TABLE ============ */
 .accident table {
-  border-collapse: collapse;
   width: 100%;
-  background-color: var(--card-bg);
-  border-radius: 10px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
   overflow: hidden;
+  box-shadow: var(--shadow);
 }
-
-/* ID hiển thị trên góc */
-.violation-id-top {
-  position: absolute;
-  top: 10px;
-  right: 16px;
-  font-weight: bold;
-  color: #fff;
-  background: #333;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.95em;
-  z-index: 2;
-}
-
-/* Ô tiêu đề và ô dữ liệu trong bảng */
-.accident th,
-.accident td {
-  padding: 12px 16px;
+.accident thead th {
   text-align: left;
-  border-bottom: 1px solid #333;
+  padding: 14px 16px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.03),
+    transparent
+  );
+  color: #9debdc;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--border);
+}
+.accident tbody td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.accident tbody tr {
+  background: var(--row);
+  transition: background 0.2s ease;
+}
+.accident tbody tr:nth-child(even) {
+  background: var(--row-alt);
+}
+.accident tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
 
-/* Ô tiêu đề của bảng */
-.accident th {
-  background-color: #2b2b2b;
-  color: var(--accent);
-}
-
-/* Ảnh trong ô bảng */
+/* Ảnh trong bảng */
 .accident td img {
-  width: 400px;
-  height: auto;
-  border-radius: 4px;
-}
-
-/* Màu chữ trạng thái mở */
-.status-open {
-  color: #00ffcc;
-  font-weight: bold;
-}
-
-/* Màu chữ trạng thái đóng */
-.status-closed {
-  color: #ff4d4d;
-  font-weight: bold;
+  display: block;
+  width: 120px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0b0f16;
 }
 
 /* ID có thể click */
 .clickable-id {
-  font-weight: bold;
+  font-weight: 800;
+  color: var(--accent);
 }
 
-/* Overlay nền popup */
+/* Ô responders */
+.accident td > div {
+  margin: 3px 0;
+}
+.accident td em {
+  color: var(--muted);
+}
+
+/* ============ STATUS (giữa ngang + dọc) ============ */
+/* Ô cột trạng thái */
+.accident td.status-cell {
+  text-align: center;
+  vertical-align: middle; /* canh giữa theo dòng */
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Huy hiệu trạng thái */
+.badge {
+  display: inline-flex;
+  justify-content: center; /* giữa ngang cho nội dung */
+  align-items: center; /* giữa dọc cho nội dung */
+  height: 34px; /* chiều cao cố định để canh dọc đẹp */
+  padding: 0 14px;
+  min-width: 120px;
+  border-radius: 999px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.04);
+  margin: 0 auto; /* đảm bảo nằm giữa ô */
+}
+
+/* Màu theo trạng thái */
+/* Màu theo trạng thái - rõ hơn trên nền tối */
+.badge.status-open {
+  color: #00ffe0; /* xanh ngọc sáng hơn */
+}
+
+.badge.status-processing {
+  color: #ffb84d; /* vàng sáng hơn */
+}
+
+.badge.status-closed {
+  color: #4dff91; /* xanh lá sáng hơn */
+}
+
+.badge.status-canceled {
+  color: #ff6b6b; /* đỏ sáng hơn */
+}
+
+/* ============ MODAL ============ */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-/* Nội dung popup */
-.modal-content {
-  background-color: var(--modal-bg);
+  inset: 0;
+  background: rgba(3, 7, 18, 0.76);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
   padding: 20px;
-  border-radius: 10px;
-  color: var(--text);
-  max-width: 600px;
-  width: 80%;
-  text-align: center;
-  animation: popup-fade 0.3s ease;
+  z-index: 1000;
+  animation: fadeIn 0.18s ease;
 }
-
-/* Ảnh trong popup */
+.modal-content {
+  width: min(820px, 100%);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  text-align: center;
+  animation: pop 0.18s ease-out;
+}
+.modal-content h2 {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 26px;
+  font-weight: 900;
+}
+.modal-content p strong {
+  color: #cfe7e2;
+}
 .modal-content img {
   width: 100%;
-  border-radius: 8px;
-  margin-top: 10px;
+  max-width: 520px;
+  height: auto;
+  margin: 10px auto 6px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
 }
 
-/* Nút trong popup */
-.modal-content button {
-  margin-top: 15px;
-  padding: 8px 16px;
-  background-color: var(--primary);
-  border: none;
-  border-radius: 5px;
+/* Responders trong modal */
+.modal-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 16px;
+}
+.modal-content ul li {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  margin: 6px 0;
+}
+
+/* Form thêm responder */
+.add-responder-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.add-responder-form select {
+  appearance: none;
+  background: #0f1420;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  min-width: 190px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.add-responder-form select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 230, 184, 0.22);
+}
+
+/* Buttons */
+button {
+  appearance: none;
   cursor: pointer;
-  font-weight: bold;
-  color: #fff;
+  border: 0;
+  font-weight: 800;
+}
+button:not(.secondary) {
+  background: var(--accent);
+  color: #0a1412;
+  padding: 12px 16px;
+  border-radius: 12px;
+  transition: filter 0.2s, transform 0.05s, background 0.2s;
+}
+button:not(.secondary):hover {
+  filter: brightness(1.05);
+}
+button:not(.secondary):active {
+  transform: translateY(1px) scale(0.995);
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-/* Hiệu ứng hover cho nút popup */
-.modal-content button:hover {
-  filter: brightness(0.95);
+button.secondary {
+  background: transparent;
+  color: #d1d7e2;
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  border-radius: 12px;
+}
+button.secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* Animation popup xuất hiện */
-@keyframes popup-fade {
+/* Animations */
+@keyframes pop {
   from {
-    transform: scale(0.8);
+    transform: translateY(4px) scale(0.98);
     opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: none;
     opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 760px) {
+  .accident thead th:nth-child(4),
+  .accident tbody td:nth-child(4) {
+    display: none;
+  } /* Ẩn cột Image */
+  .accident td img {
+    width: 96px;
+    height: 58px;
+  }
+  .modal-content {
+    padding: 18px;
+    border-radius: 16px;
+  }
+  .add-responder-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .add-responder-form select,
+  .actions button {
+    width: 100%;
   }
 }
