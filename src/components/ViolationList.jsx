@@ -39,7 +39,7 @@ function ViolationDetailPopup({ violation, onClose }) {
           <strong>Tên người vi phạm:</strong> {violation.violatorName}
         </p>
         <p className="violation-popup__field">
-          <strong>Mã người vi phạm:</strong> {violation.violatorId}
+          <strong>CCCD người vi phạm:</strong> {violation.violatorId}
         </p>
         <p className="violation-popup__field">
           <strong>Tên cảnh sát lập biên bản:</strong> {violation.officerName}
