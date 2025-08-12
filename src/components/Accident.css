@@ -16,7 +16,7 @@
 .accident table {
   border-collapse: collapse;
   width: 100%; /* Full width */
-  background-color: #1e1e1e;
+  background-color: var(--card-bg);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -30,7 +30,7 @@
 
 .accident th {
   background-color: #2b2b2b;
-  color: #00ffcc;
+  color: var(--accent);
 }
 
 .accident td img {
@@ -70,10 +70,10 @@
 
 /* Modal Content */
 .modal-content {
-  background-color: #1e1e1e;
+  background-color: var(--modal-bg);
   padding: 20px;
   border-radius: 10px;
-  color: white;
+  color: var(--text);
   max-width: 600px;
   width: 80%;
   text-align: center;
@@ -89,15 +89,16 @@
 .modal-content button {
   margin-top: 15px;
   padding: 8px 16px;
-  background-color: #00ffcc;
+  background-color: var(--primary);
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
+  color: #fff;
 }
 
 .modal-content button:hover {
-  background-color: #00cc99;
+  filter: brightness(0.95);
 }
 
 /* Animation */

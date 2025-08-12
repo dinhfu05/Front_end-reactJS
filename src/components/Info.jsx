@@ -5,6 +5,7 @@ function Info({ onLogout }) {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showAvatar, setShowAvatar] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -66,7 +67,13 @@ function Info({ onLogout }) {
     <div className="profile-bg">
       <div className="profile-form-container">
         <div className="profile-sidebar">
-          <img src="/phu.jpg" alt="avatar" className="profile-avatar-big" />
+          <img
+            src="/phu.jpg"
+            alt="avatar"
+            className="profile-avatar-big"
+            onClick={() => setShowAvatar(true)}
+            style={{ cursor: "pointer" }}
+          />
           <div className="profile-sidebar-name">
             {sessionStorage.getItem("username") || "Khách"}
           </div>
@@ -131,6 +138,15 @@ function Info({ onLogout }) {
           </div>
         </div>
       </div>
+
+      {showAvatar && (
+        <div className="modal-overlay" onClick={() => setShowAvatar(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <img src="/phu.jpg" alt="Avatar" style={{ width: "100%", borderRadius: 12 }} />
+            <button className="close-btn" onClick={() => setShowAvatar(false)}>Đóng</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

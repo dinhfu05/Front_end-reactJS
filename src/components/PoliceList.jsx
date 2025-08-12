@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import data from "../../data";
 import "./PoliceList.css";
 
 const policeList = [
@@ -94,9 +95,9 @@ const policeList = [
   },
 ];
 
-function PoliceCard({ police, onClick }) {
+function PoliceCard({ police, onCardClick, onContact, onNotify }) {
   return (
-    <div className="police-card" onClick={() => onClick(police)}>
+    <div className="police-card" onClick={() => onCardClick(police)}>
       <img src={police.img} alt={police.name} className="police-img" />
       <h4 className="police-name">{police.name}</h4>
       <p className="police-rank">{police.rank}</p>
@@ -105,22 +106,83 @@ function PoliceCard({ police, onClick }) {
       <p className="police-phone">
         <b>SĐT:</b> {police.phone || "Chưa cập nhật"}
       </p>
-      <button className="call-police" onClick={() => onClick(police)}>
-        liên hệ ngay
-      </button>
+      <div className="action-buttons">
+        <button
+          className="contact-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            onContact(police);
+          }}
+        >
+          Liên hệ
+        </button>
+        <button
+          className="notify-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            onNotify(police);
+          }}
+        >
+          Thông báo
+        </button>
+      </div>
     </div>
   );
 }
 
 export default function PoliceList() {
-  const [selectedPolice, setSelectedPolice] = useState(null);
+  const [selectedPolice, setSelectedPolice] = useState(null); // popup xem chi tiết
+  const [contactPolice, setContactPolice] = useState(null); // popup liên hệ
+  const [notifyPolice, setNotifyPolice] = useState(null); // popup thông báo
+  const [selectedAccidentId, setSelectedAccidentId] = useState("");
+
+  const accidents = data || [];
+
+  const handleCallPhone = () => {
+    if (!contactPolice?.phone) {
+      alert("Không có số điện thoại để gọi");
+      return;
+    }
+    window.location.href = `tel:${contactPolice.phone}`;
+  };
+
+  const handleCallSystem = () => {
+    alert(
+      `Đang thực hiện cuộc gọi qua hệ thống tới ${
+        contactPolice?.name || "cán bộ"
+      }...`
+    );
+  };
+
+  const handleSendNotification = () => {
+    if (!selectedAccidentId) {
+      alert("Vui lòng chọn vụ tai nạn");
+      return;
+    }
+    const acc = accidents.find(
+      (a) => String(a.id) === String(selectedAccidentId)
+    );
+    alert(
+      `Đã gửi thông báo tới ${notifyPolice?.name || "cán bộ"} cho vụ tai nạn #${
+        acc?.id
+      } (${acc?.road || ""} - ${acc?.time || ""}).`
+    );
+    setNotifyPolice(null);
+    setSelectedAccidentId("");
+  };
 
   return (
     <div className="police-container">
       <h2 className="police-title">Danh Sách Cảnh Sát</h2>
       <div className="police-grid">
         {policeList.map((p) => (
-          <PoliceCard key={p.id} police={p} onClick={setSelectedPolice} />
+          <PoliceCard
+            key={p.id}
+            police={p}
+            onCardClick={setSelectedPolice}
+            onContact={setContactPolice}
+            onNotify={setNotifyPolice}
+          />
         ))}
       </div>
 
@@ -144,6 +206,77 @@ export default function PoliceList() {
               className="close-btn"
               onClick={() => setSelectedPolice(null)}
             >
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Popup Liên hệ */}
+      {contactPolice && (
+        <div
+          className="police-modal-overlay"
+          onClick={() => setContactPolice(null)}
+        >
+          <div
+            className="police-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3>Liên hệ {contactPolice.name}</h3>
+            <p>
+              <b>SĐT:</b> {contactPolice.phone || "Chưa cập nhật"}
+            </p>
+            <div className="modal-actions">
+              <button className="contact-btn" onClick={handleCallPhone}>
+                Gọi qua SĐT
+              </button>
+              <button className="notify-btn" onClick={handleCallSystem}>
+                Gọi qua hệ thống
+              </button>
+            </div>
+            <button
+              className="close-btn"
+              onClick={() => setContactPolice(null)}
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Popup Thông báo */}
+      {notifyPolice && (
+        <div
+          className="police-modal-overlay"
+          onClick={() => setNotifyPolice(null)}
+        >
+          <div
+            className="police-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3>Gửi thông báo tới {notifyPolice.name}</h3>
+            <div className="field">
+              <label htmlFor="acc-select">Chọn vụ tai nạn</label>
+              <select
+                id="acc-select"
+                value={selectedAccidentId}
+                onChange={(e) => setSelectedAccidentId(e.target.value)}
+              >
+                <option value="">-- Chọn vụ tai nạn --</option>
+                {accidents.map((a) => (
+                  <option
+                    key={a.id}
+                    value={a.id}
+                  >{`#${a.id} - ${a.road} - ${a.time}`}</option>
+                ))}
+              </select>
+            </div>
+            <div className="modal-actions">
+              <button className="notify-btn" onClick={handleSendNotification}>
+                Xác nhận gửi
+              </button>
+            </div>
+            <button className="close-btn" onClick={() => setNotifyPolice(null)}>
               Đóng
             </button>
           </div>

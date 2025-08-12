@@ -38,6 +38,18 @@ function App() {
     setCheckingAuth(false);
   }, []);
 
+  // Khởi tạo theme và màu nhấn từ localStorage khi app load
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const savedAccent = localStorage.getItem("accent");
+    if (savedTheme) {
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    }
+    if (savedAccent) {
+      document.documentElement.style.setProperty("--accent", savedAccent);
+    }
+  }, []);
+
   const handleLogin = ({ token, id }) => {
     sessionStorage.setItem("token", token);
     sessionStorage.setItem("userId", id);

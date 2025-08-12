@@ -1,9 +1,9 @@
 .profile-form-container {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 10px;
   display: flex;
   flex-direction: row;
-  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.13);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.3);
   width: 1300px;
   max-width: 98vw;
   min-height: 600px;
@@ -11,14 +11,14 @@
 }
 
 .profile-sidebar {
-  background: #fff;
+  background: var(--card-bg);
   min-width: 220px;
   max-width: 260px;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 36px 18px 18px 18px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid var(--card-border);
 }
 
 .profile-avatar-big {
@@ -28,14 +28,14 @@
   object-fit: cover;
   margin-top: 15%;
   margin-bottom: 18px;
-  border: 3px solid #e3e6f0;
+  border: 3px solid var(--card-border);
 }
 
 .profile-sidebar-name {
   font-weight: bold;
   font-size: 1.15rem;
   margin-bottom: 4px;
-  color: #222;
+  color: var(--text);
   text-align: center;
 }
 
@@ -49,14 +49,14 @@
 }
 
 .profile-sidebar-role {
-  color: #120444;
+  color: var(--text);
   font-size: 1rem;
   margin-bottom: 4px;
   text-align: center;
 }
 
 .profile-sidebar-cccd {
-  color: #444;
+  color: var(--text);
   font-size: 0.98rem;
   margin-bottom: 24px;
   text-align: center;
@@ -77,13 +77,13 @@
 }
 
 .profile-main-form {
-  border-right: 1px solid #eee;
+  border-right: 1px solid var(--card-border);
 }
 
 .profile-form-title {
   font-size: 2rem;
   font-weight: bold;
-  color: #120444;
+  color: var(--text);
   margin-bottom: 18px;
   text-align: center;
 }
@@ -103,7 +103,7 @@
 .profile-main-form label,
 .profile-experience label {
   font-size: 1rem;
-  color: #120444;
+  color: var(--text);
   margin-bottom: 4px;
   font-weight: 500;
 }
@@ -112,11 +112,11 @@
 .profile-experience input,
 .profile-experience textarea {
   padding: 8px 10px;
-  border: 1px solid #d1b3e0;
+  border: 1px solid var(--card-border);
   border-radius: 5px;
   font-size: 1rem;
-  background: #f8f6fa;
-  color: #222;
+  background: var(--content-bg);
+  color: var(--text);
   margin-bottom: 8px;
   resize: none;
 }

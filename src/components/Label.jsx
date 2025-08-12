@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -7,6 +7,8 @@ import {
   FaUserShield,
   FaCog,
   FaSignOutAlt,
+  FaSun,
+  FaMoon,
 } from "react-icons/fa";
 import "./Label.css";
 
@@ -32,8 +34,20 @@ export function TabButton({
 
 function Column({ onLogout }) {
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "dark"
+  );
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
 
   const handleConfirmLogout = () => {
     localStorage.removeItem("token");

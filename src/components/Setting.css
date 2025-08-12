@@ -1,68 +1,264 @@
-.setting-container {
-  max-width: 500px;
-  margin: auto;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
-  color: black; /* ✅ Toàn bộ chữ thành màu đen */
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: black; /* ✅ Tiêu đề màu đen */
-}
-
-.setting-item {
+.setting-page {
   display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: var(--text);
+  align-items: center; /* căn giữa toàn bộ nội dung */
+}
+
+.setting-hero {
+  background: linear-gradient(
+    135deg,
+    rgba(77, 166, 255, 0.2),
+    rgba(171, 114, 255, 0.2)
+  );
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  width: 100%;
+  max-width: 1000px; /* giới hạn chiều rộng và căn giữa theo .setting-page */
+}
+.setting-hero h1 {
+  margin: 0 0 6px 0;
+}
+.setting-hero p {
+  margin: 0;
+  opacity: 0.85;
+}
+
+.setting-grid {
+  display: grid;
+  gap: 24px; /* giãn cách các ô */
+  grid-template-columns: repeat(2, minmax(320px, 1fr)); /* 2 ô trên, 2 ô dưới */
+  justify-content: center; /* căn giữa các ô */
+  width: 100%;
+  max-width: 1000px;
+}
+
+@media (max-width: 768px) {
+  .setting-grid {
+    grid-template-columns: 1fr; /* mobile: xếp 1 cột */
+  }
+}
+
+.setting-card {
+  width: 300px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+.setting-card__header {
+  display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
+}
+.setting-card__subtitle {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+/* Theme cards */
+.theme-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.theme-card {
+  position: relative;
+  display: flex;
   align-items: center;
-  color: black; /* ✅ Chữ trong setting */
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  background: var(--content-bg);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.theme-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent);
+}
+.theme-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+.theme-card__icon {
+  font-size: 20px;
+}
+.theme-card__title {
+  font-weight: 600;
+}
+.theme-card__check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: var(--accent);
+}
+.theme-preview {
+  margin-left: auto;
+  width: 70px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+}
+.theme-preview--light {
+  background: linear-gradient(180deg, #ffffff 50%, #e9efff 50%);
+}
+.theme-preview--dark {
+  background: linear-gradient(180deg, #0f172a 50%, #1f2937 50%);
 }
 
-.setting-item label {
-  font-weight: bold;
-  color: black; /* ✅ Label cũng màu đen */
+/* Theme toggle buttons (Light/Dark) */
+.theme-toggle {
+  display: inline-flex;
+  gap: 8px;
+}
+.theme-toggle__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  background: var(--content-bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.theme-toggle__btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+}
+.theme-toggle__btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
-.setting-item select,
-.setting-item input[type="checkbox"] {
-  padding: 5px;
-  font-size: 14px;
-  color: black; /* ✅ Chữ trong select */
+/* Accent color */
+.accent-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.accent-swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.accent-swatch.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(77, 166, 255, 0.2);
+}
+.accent-swatch:hover {
+  transform: scale(1.05);
+}
+/* bỏ nhóm custom color */
+
+/* Toggle switches */
+.toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.toggle input {
+  display: none;
+}
+.toggle__slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: #b4b8c5;
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+.toggle__slider::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+.toggle input:checked + .toggle__slider {
+  background: var(--accent);
+}
+.toggle input:checked + .toggle__slider::after {
+  transform: translateX(20px);
+}
+.toggle__label {
+  opacity: 0.9;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
 }
 
+/* Field */
+.field select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--content-bg);
+  color: var(--text);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+}
+
+/* Actions */
 .setting-actions {
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+  align-items: center;
+  justify-content: center; /* căn giữa hàng nút */
+  gap: 16px;
+  margin-top: 8px;
+  flex-wrap: wrap;
 }
-
-.save-btn {
-  background: #27ae60;
-  color: white;
-  padding: 8px 15px;
+.setting-actions .spacer {
+  flex: 1;
+}
+.btn {
+  padding: 10px 14px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
+  font-weight: 600;
 }
-
-.logout-btn {
-  background: #e74c3c;
-  color: white;
-  padding: 8px 15px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
 }
-
-.save-btn:hover {
-  background: #2ecc71;
+.btn-secondary {
+  background: #64748b;
+  color: #fff;
 }
-
-.logout-btn:hover {
-  background: #c0392b;
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+}
+.btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  transition: all 0.2s;
 }

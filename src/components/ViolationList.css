@@ -2,7 +2,7 @@
   width: 96%;
   height: 100vh;
   padding: 24px;
-  color: #f8fafc;
+  color: var(--text);
   overflow-x: auto;
   overflow-y: auto;
 }
@@ -12,7 +12,7 @@
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 20px;
-  color: #ffffff;
+  color: var(--text);
   text-align: center;
   text-shadow: 0 0 10px rgba(0, 175, 250, 0.6);
 }
@@ -26,8 +26,8 @@
   border-radius: 8px;
   border: none;
   outline: none;
-  background: #f8f8f8;
-  color: #020202;
+  background: #edecec;
+  color: var(--text);
   font-size: 15px;
   box-shadow: 0 0 0 2px #38bdf8 inset;
   transition: 0.3s;
@@ -46,6 +46,7 @@
 .violation-filter__option {
   font-size: 17px;
   cursor: pointer;
+  color: var(--text);
 }
 .violation-filter__option input {
   margin-right: 6px;
@@ -55,10 +56,10 @@
 .violation-table {
   width: 100%;
   border-collapse: collapse;
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
 }
 
 .violation-table th,
@@ -69,10 +70,10 @@
 }
 
 .violation-table th {
-  background: #1e293b;
-  color: #ffffff;
+  background: var(--table-header-bg);
+  color: var(--table-header-text);
   font-weight: bold;
-  border-bottom: 2px solid rgba(56, 189, 248, 0.4);
+  border-bottom: 2px solid rgba(56, 189, 248, 0.2);
 }
 
 .violation-table tr {
@@ -82,12 +83,12 @@
 }
 
 .violation-table tr:hover {
-  background: rgba(56, 189, 248, 0.08);
+  background: var(--table-row-hover-bg);
   font-weight: bold;
 }
 
 .violation-table td {
-  color: #000000;
+  color: var(--text);
   font-weight: bold;
 }
 
@@ -106,16 +107,16 @@
 .violation-list__no-data {
   text-align: center;
   padding: 20px;
-  color: #94a3b8;
+  color: var(--text);
 }
 
 .violation-table tr:hover {
-  background: rgba(56, 189, 248, 0.3); /* nền sáng hơn */
-  color: rgb(7, 6, 6); /* chữ trắng nổi bật */
+  background: rgba(56, 189, 248, 0.3);
+  color: var(--text);
   transition: background 0.3s ease, color 0.3s ease;
 }
 .violation-table tr:hover td {
-  color: rgb(0, 0, 0); /* Đảm bảo toàn bộ ô trong hàng đổi màu chữ */
+  color: var(--text);
 }
 
 /* Loading */
@@ -142,12 +143,12 @@
 
 /* Popup box */
 .violation-popup {
-  background: #ffffff;
+  background: var(--card-bg);
   padding: 24px;
   border-radius: 14px;
   width: 90%;
   max-width: 600px;
-  color: #040606;
+  color: var(--text);
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
   animation: fadeIn 0.3s ease;
 }
@@ -157,7 +158,7 @@
   margin-top: 0px;
   font-size: 22px;
   margin-bottom: 14px;
-  color: #040606;
+  color: var(--text);
   border-bottom: 1px solid rgba(56, 189, 248, 0.3);
   padding-bottom: 8px;
 }
@@ -165,7 +166,7 @@
 /* Trường thông tin */
 .violation-popup__field {
   font-size: 15px;
-  color: #040606;
+  color: var(--text);
 }
 .violation-popup__field_hinh_thuc {
   color: #dd0606;
@@ -177,7 +178,7 @@
 /* Danh sách chi tiết vi phạm */
 .violation-popup__details {
   margin-top: 12px;
-  color: #040606;
+  color: var(--text);
   background: rgba(11, 27, 34, 0.08);
   padding: 10px;
   border-radius: 8px;
@@ -189,13 +190,13 @@
 .violation-popup__list-item {
   margin: 4px 0;
   font-size: 14px;
-  color: #040606;
+  color: var(--text);
 }
 
 /* Nút đóng */
 .violation-popup__close-btn {
   margin-top: 18px;
-  background: #ef4444;
+  background: #ff0000;
   border: none;
   padding: 8px 14px;
   border-radius: 8px;
@@ -204,7 +205,7 @@
   transition: 0.25s;
 }
 .violation-popup__close-btn:hover {
-  background: #dc2626;
+  filter: brightness(0.95);
 }
 
 /* Hiệu ứng */

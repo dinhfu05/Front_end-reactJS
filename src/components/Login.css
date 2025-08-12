@@ -206,7 +206,7 @@
   transition: background 0.2s, color 0.2s;
 }
 .submit-btn:hover {
-  background: #18344d;
+  background: var(--primary);
   color: #fff;
 }
 
@@ -229,7 +229,7 @@
   vertical-align: middle;
 }
 .content-right {
-  margin-top: 10
+  margin-top: 10;
 }
 @keyframes spin {
   to {
