@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLanguageContext } from "../contexts/LanguageContext";
+import { useLanguageContext } from "../../contexts/LanguageContext";
 import "./ViolationList.css";
 
 // Hàm định dạng ngày tháng, nếu không có dữ liệu trả về "Không có dữ liệu"

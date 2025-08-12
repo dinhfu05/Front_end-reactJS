@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaCheck, FaDesktop, FaEnvelope, FaBell } from "react-icons/fa";
 import { FiSun, FiMoon } from "react-icons/fi";
-import { useLanguageContext } from "../contexts/LanguageContext";
+import { useLanguageContext } from "../../contexts/LanguageContext";
 import "./Setting.css";
 
 // Mảng màu accent để người dùng chọn

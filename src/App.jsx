@@ -5,13 +5,13 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Login from "./components/Login";
-import Label from "./components/Label";
-import Accident from "./components/Accident";
-import Info from "./components/Info";
-import Setting from "./components/Setting";
-import PoliceList from "./components/PoliceList";
-import ViolationList from "./components/ViolationList";
+import Login from "./auth/Login";
+import Label from "./components/Label/Label";
+import Accident from "./pages/Accident/Accident";
+import Info from "./pages/Info/Info";
+import Setting from "./pages/Setting/Setting";
+import PoliceList from "./pages/PoliceList/PoliceList";
+import ViolationList from "./pages/ViolationList/ViolationList";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import "./App.css";
 
@@ -73,88 +73,88 @@ function App() {
     <LanguageProvider>
       <Router>
         <Routes>
-        {/* Trang login */}
-        <Route
-          path="/login"
-          element={
-            isLoggedIn ? (
-              <Navigate to="/accident" />
-            ) : (
-              <Login onLogin={handleLogin} />
-            )
-          }
-        />
+          {/* Trang login */}
+          <Route
+            path="/login"
+            element={
+              isLoggedIn ? (
+                <Navigate to="/accident" />
+              ) : (
+                <Login onLogin={handleLogin} />
+              )
+            }
+          />
 
-        {/* Các route có layout chung */}
-        <Route
-          path="/accident"
-          element={
-            isLoggedIn ? (
-              <MainLayout onLogout={handleLogout}>
-                <Accident />
-              </MainLayout>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route
-          path="/info"
-          element={
-            isLoggedIn ? (
-              <MainLayout onLogout={handleLogout}>
-                <Info userId={userId} />
-              </MainLayout>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route
-          path="/setting"
-          element={
-            isLoggedIn ? (
-              <MainLayout onLogout={handleLogout}>
-                <Setting />
-              </MainLayout>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route
-          path="/PoliceList"
-          element={
-            isLoggedIn ? (
-              <MainLayout onLogout={handleLogout}>
-                <PoliceList />
-              </MainLayout>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
+          {/* Các route có layout chung */}
+          <Route
+            path="/accident"
+            element={
+              isLoggedIn ? (
+                <MainLayout onLogout={handleLogout}>
+                  <Accident />
+                </MainLayout>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/info"
+            element={
+              isLoggedIn ? (
+                <MainLayout onLogout={handleLogout}>
+                  <Info userId={userId} />
+                </MainLayout>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/setting"
+            element={
+              isLoggedIn ? (
+                <MainLayout onLogout={handleLogout}>
+                  <Setting />
+                </MainLayout>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/PoliceList"
+            element={
+              isLoggedIn ? (
+                <MainLayout onLogout={handleLogout}>
+                  <PoliceList />
+                </MainLayout>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
 
-        {/* Trang danh sách biên bản vi phạm */}
-        <Route
-          path="/violations"
-          element={
-            isLoggedIn ? (
-              <MainLayout onLogout={handleLogout}>
-                <ViolationList />
-              </MainLayout>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
+          {/* Trang danh sách biên bản vi phạm */}
+          <Route
+            path="/violations"
+            element={
+              isLoggedIn ? (
+                <MainLayout onLogout={handleLogout}>
+                  <ViolationList />
+                </MainLayout>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
 
-        {/* Mặc định */}
-        <Route
-          path="*"
-          element={<Navigate to={isLoggedIn ? "/accident" : "/login"} />}
-        />
-              </Routes>
+          {/* Mặc định */}
+          <Route
+            path="*"
+            element={<Navigate to={isLoggedIn ? "/accident" : "/login"} />}
+          />
+        </Routes>
       </Router>
     </LanguageProvider>
   );

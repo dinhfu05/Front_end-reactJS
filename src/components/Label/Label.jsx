@@ -10,7 +10,7 @@ import {
   FaSun,
   FaMoon,
 } from "react-icons/fa";
-import { useLanguageContext } from "../contexts/LanguageContext";
+import { useLanguageContext } from "../../contexts/LanguageContext";
 import "./Label.css";
 
 // Component nút tab sidebar

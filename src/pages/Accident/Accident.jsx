@@ -1,8 +1,8 @@
 // Component quản lý danh sách tai nạn, hiển thị bảng và popup chi tiết tai nạn
 
 import { useState } from "react";
-import { useLanguageContext } from "../contexts/LanguageContext";
-import data from "../../data";
+import { useLanguageContext } from "../../contexts/LanguageContext";
+import data from "@root/data.js";
 import "./Accident.css";
 
 function Accident() {

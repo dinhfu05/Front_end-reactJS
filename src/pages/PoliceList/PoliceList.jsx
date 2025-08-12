@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useLanguageContext } from "../contexts/LanguageContext";
-import data from "../../data";
+import { useLanguageContext } from "../../contexts/LanguageContext";
+import data from "@root/data.js";
 import "./PoliceList.css";
 
 // Danh sách cảnh sát mẫu, mỗi người có id, tên, quân hàm, chức vụ, ảnh, khu vực, số điện thoại

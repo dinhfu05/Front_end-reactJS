@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLanguageContext } from "../contexts/LanguageContext";
+import { useLanguageContext } from "../../contexts/LanguageContext";
 import "./Info.css";
 
 // Component hiển thị thông tin cá nhân người dùng
