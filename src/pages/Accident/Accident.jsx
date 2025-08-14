@@ -1,140 +1,206 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useLanguageContext } from "../../contexts/LanguageContext";
 import "./Accident.css";
 
-const API_BASE = "http://localhost:8087";
+import {
+  normalizeStatus,
+  inferAccidentStatusFromResponders,
+  findNearestResponders,
+} from "../../utils/dispatch";
 
-const getRoad = (o) => o?.road_name ?? o?.road ?? o?.route ?? "—";
-const getTs = (o) => o?.timestamp ?? o?.time ?? o?.ts ?? null;
-const parseDate = (ts) => {
-  if (!ts) return new Date(NaN);
-  if (typeof ts === "number") return new Date(ts < 1e12 ? ts * 1000 : ts);
-  const s = String(ts).trim();
-  return new Date(s.includes("T") ? s : s.replace(" ", "T"));
-};
-const formatTime = (ts) => {
-  const d = parseDate(ts);
-  return isNaN(d)
-    ? "—"
-    : d.toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
-};
+/* ===== Cấu hình API ===== */
+const BASE_URL = "http://localhost:8087/quet/api";
+const AUTH_TOKEN = ""; // "Bearer <token>" nếu cần
 
-const UNIT_LABELS = {
-  ambulance: "Cấp cứu 115",
-  police: "CSGT",
-  fire: "Cứu hỏa",
-  rescue: "Cứu nạn",
-};
+/* ===== Tham số thuật toán ===== */
+const SPEED_KMH_DEFAULT = 50;
+const MIN_ETA_MIN = 2;
 
-const getAccStatusText = (res = []) => {
-  if (!res.length) return "chờ xác nhận";
-  if (res.some((r) => r.status === "on_scene")) return "Đang xử lý";
-  if (res.some((r) => r.status === "en_route")) return "Đang đến";
-  if (res.every((r) => r.status === "cleared")) return "Đã xử lý";
-  if (res.every((r) => r.status === "canceled")) return "Đã hủy";
-  return "chờ xác nhận";
+/* ===== Helpers UI ===== */
+const VI_LABELS = {
+  pending: "chờ xác nhận",
+  en_route: "đang đến",
+  cleared: "đã xử lý",
+  canceled: "đã hủy",
 };
-const getAccStatusClass = (res = []) => {
-  if (!res.length) return "status-open";
-  if (res.some((r) => r.status === "on_scene")) return "status-processing";
-  if (res.some((r) => r.status === "en_route")) return "status-processing";
-  if (res.every((r) => r.status === "cleared")) return "status-closed";
-  if (res.every((r) => r.status === "canceled")) return "status-canceled";
-  return "status-open";
-};
+function statusClass(code) {
+  switch (code) {
+    case "pending":
+      return "status-open";
+    case "en_route":
+      return "status-processing";
+    case "cleared":
+      return "status-closed";
+    case "canceled":
+      return "status-canceled";
+    default:
+      return "status-open";
+  }
+}
+function formatCamera(id) {
+  const m = String(id || "").match(/\d+/);
+  return m ? `cam ${m[0]}` : "-";
+}
+function formatType(type) {
+  const s = String(type || "").toLowerCase();
+  if (s.startsWith("car")) return "car";
+  return s.replace(/_.*/, "") || "-";
+}
 
-// tránh setState thừa
-const shallowEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+/* ===== API wrapper ===== */
+async function apiCall(path, method = "GET", body) {
+  const url = path.startsWith("http") ? path : `${BASE_URL}${path}`;
+  const headers = { "Content-Type": "application/json" };
+  if (AUTH_TOKEN) {
+    headers.Authorization = AUTH_TOKEN.startsWith("Bearer")
+      ? AUTH_TOKEN
+      : `Bearer ${AUTH_TOKEN}`;
+  }
+  const res = await fetch(url, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  let json = {};
+  try {
+    json = await res.json();
+  } catch {
+    /* empty */
+  }
+  if (!res.ok) throw new Error(json?.message || `HTTP ${res.status}`);
+  return json;
+}
 
 export default function Accident() {
+  const { t } = useLanguageContext();
   const [accidents, setAccidents] = useState([]);
-  const [selectedAccident, setSelectedAccident] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    unit_type: "ambulance",
-    status: "en_route",
-  });
 
-  const didInit = useRef(false);
+  // Popups
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detailAcc, setDetailAcc] = useState(null);
 
+  const [dispatchOpen, setDispatchOpen] = useState(false);
+  const [selectedAccident, setSelectedAccident] = useState(null);
+  const [previewResponders, setPreviewResponders] = useState([]); // {unit_type,name,distance,eta}
+
+  /* ===== Load danh sách sự cố ===== */
   const fetchAccidents = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await fetch(`${API_BASE}/api/accidents`);
-      const json = await res.json();
-      const next = json?.data || [];
-      setAccidents((prev) => (shallowEqual(prev, next) ? prev : next));
-
-      if (selectedAccident) {
-        const refreshed = next.find(
-          (a) => a.accident_id === selectedAccident.accident_id
-        );
-        if (refreshed && !shallowEqual(refreshed, selectedAccident)) {
-          setSelectedAccident(refreshed);
-        }
-      }
-    } catch (e) {
-      console.error("Fetch /api/accidents lỗi:", e);
+      const res = await apiCall("/accidents", "GET");
+      const raw = Array.isArray(res) ? res : res?.data ?? [];
+      const list = raw.map((a) => ({
+        ...a,
+        status: inferAccidentStatusFromResponders(a.responder),
+      }));
+      setAccidents(list);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (didInit.current) return;
-    didInit.current = true;
     fetchAccidents();
   }, []);
 
-  const handleRowClick = (item) => {
-    setSelectedAccident(item);
-    setShowAddForm(false);
+  const openDetail = (acc) => {
+    setDetailAcc(acc);
+    setDetailOpen(true);
   };
 
-  const handleAddResponder = async (e) => {
-    e.preventDefault();
-    if (!selectedAccident || submitting) return;
+  /* ===== Mở popup điều động: lấy responders thật từ API và tính gần nhất ===== */
+  const openDispatch = async (acc) => {
+    if (normalizeStatus(acc.status) !== "pending") return;
+    if (!(acc.lat && acc.lng)) {
+      alert("Sự cố chưa có toạ độ GPS để điều động.");
+      return;
+    }
 
-    setSubmitting(true);
     try {
-      // Gửi lên server
-      await fetch(`${API_BASE}/api/responders`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accident_id: selectedAccident.accident_id,
-          unit_type: formData.unit_type,
-          status: formData.status,
-        }),
+      const respondersRes = await apiCall("/responders", "GET");
+      const responders = Array.isArray(respondersRes)
+        ? respondersRes
+        : respondersRes?.data ?? [];
+
+      const nearest = findNearestResponders(acc, responders, {
+        radiusKm: 10.5,
+        limit: 3,
+        minEtaMin: MIN_ETA_MIN,
+        speedByType: { police: 50, ambulance: 50, firefighter: 50 },
+        defaultSpeedKmh: SPEED_KMH_DEFAULT,
       });
 
-      // Cập nhật UI (optimistic)
-      const newResponder = {
-        unit_type: formData.unit_type,
-        status: formData.status,
+      if (!nearest.length) {
+        alert("Không có đơn vị phù hợp trong bán kính 10km!");
+        return;
+      }
+
+      setSelectedAccident(acc);
+      setPreviewResponders(nearest);
+      setDispatchOpen(true);
+    } catch (e) {
+      console.error(e);
+      alert("Không tải được danh sách đơn vị phản ứng!");
+    }
+  };
+
+  /* ===== Xác nhận điều động: gọi API để lưu (tuỳ backend) và cập nhật UI ===== */
+  const confirmDispatch = async () => {
+    try {
+      const payload = {
+        responders: previewResponders.map((r, idx) => ({
+          unit_id: `disp_${idx + 1}`,
+          unit_type: r.unit_type,
+          status: "en_route",
+          name: r.name,
+          eta_min: r.eta,
+          distance_km: Number(r.distance.toFixed(2)),
+        })),
       };
 
+      // Thử gọi endpoint lưu điều động (điều chỉnh cho khớp backend của bạn)
+      try {
+        await apiCall(
+          `/accidents/${selectedAccident.accident_id}/dispatch`,
+          "POST",
+          payload
+        );
+      } catch (e) {
+        console.warn("Fallback local update only:", e.message);
+      }
+
+      // Cập nhật UI local
       setAccidents((prev) =>
         prev.map((a) =>
           a.accident_id === selectedAccident.accident_id
-            ? { ...a, responder: [...(a.responder || []), newResponder] }
+            ? {
+                ...a,
+                status: "en_route",
+                responder: [...(a.responder ?? []), ...payload.responders],
+              }
             : a
         )
       );
-      setSelectedAccident((prev) =>
-        prev
-          ? { ...prev, responder: [...(prev.responder || []), newResponder] }
+
+      // nếu popup chi tiết đang mở cùng vụ, cập nhật ngay
+      setDetailAcc((prev) =>
+        prev && prev.accident_id === selectedAccident.accident_id
+          ? {
+              ...prev,
+              status: "en_route",
+              responder: [...(prev.responder ?? []), ...payload.responders],
+            }
           : prev
       );
 
-      setFormData({ unit_type: "ambulance", status: "en_route" });
-      setShowAddForm(false);
-    } catch (err) {
-      console.error("Lỗi thêm responder:", err);
-      alert("Lỗi mạng khi thêm cán bộ xử lý");
-    } finally {
-      setSubmitting(false);
+      setDispatchOpen(false);
+      alert(
+        `Đã điều động ${previewResponders.length} đơn vị đến sự cố #${selectedAccident.accident_id}`
+      );
+    } catch (e) {
+      console.error(e);
+      alert("Có lỗi khi điều động!");
     }
   };
 
@@ -144,160 +210,256 @@ export default function Accident() {
         <table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Road</th>
-              <th>Time</th>
-              <th>Image</th>
-              <th>Responders</th>
-              <th>Status</th>
+              <th>{t("accident.table.id")}</th>
+              <th>{t("accident.table.road")}</th>
+              <th>{t("accident.table.time")}</th>
+              <th>{t("accident.table.image")}</th>
+              <th>Camera</th>
+              <th>Loại</th>
+              <th className="center-col">{t("accident.table.status")}</th>
+              <th className="center-col">Điều động</th>
             </tr>
           </thead>
           <tbody>
             {accidents.map((item) => {
-              const road = getRoad(item);
-              const time = formatTime(getTs(item));
-              const responders = item.responder || [];
-
+              const id = item.accident_id ?? item.id;
+              const code = normalizeStatus(item.status);
+              const isPending = code === "pending";
               return (
-                <tr key={item.accident_id} onClick={() => handleRowClick(item)}>
-                  <td className="clickable-id">{item.accident_id}</td>
-                  <td>{road}</td>
-                  <td>{time}</td>
+                <tr key={id}>
                   <td>
-                    <img
-                      src={item.image_url}
-                      alt="Accident"
-                      width="100"
-                      loading="lazy"
-                      onError={(e) => {
-                        const el = e.currentTarget;
-                        if (!el.dataset.fallback) {
-                          el.dataset.fallback = "1";
-                          el.src =
-                            "https://via.placeholder.com/300x180?text=No+Image";
-                        }
-                      }}
-                    />
+                    <button
+                      className="link-like"
+                      onClick={() => openDetail(item)}
+                    >
+                      <b>{id}</b>
+                    </button>
                   </td>
                   <td>
-                    {responders.length ? (
-                      responders.map((r, idx) => (
-                        <div key={idx}>
-                          {UNIT_LABELS[r.unit_type] || r.unit_type}
-                        </div>
-                      ))
+                    <button
+                      className="link-like"
+                      onClick={() => openDetail(item)}
+                    >
+                      {item.road_name || "-"}
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className="link-like"
+                      onClick={() => openDetail(item)}
+                    >
+                      {item.timestamp
+                        ? new Date(item.timestamp).toLocaleString("vi-VN")
+                        : "-"}
+                    </button>
+                  </td>
+                  <td>
+                    {item.image_url ? (
+                      <img
+                        src={item.image_url}
+                        alt="Tai nạn"
+                        className="thumb"
+                        onClick={() => openDetail(item)}
+                        role="button"
+                      />
                     ) : (
-                      <em>Chưa có</em>
+                      "-"
                     )}
                   </td>
-                  {/* Status: badge nằm giữa, đổi màu theo class */}
-                  <td className="status-cell">
-                    <span className={`badge ${getAccStatusClass(responders)}`}>
-                      {getAccStatusText(responders)}
-                    </span>
+                  <td>
+                    <button
+                      className="link-like"
+                      onClick={() => openDetail(item)}
+                    >
+                      {formatCamera(item.camera_id)}
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className="link-like"
+                      onClick={() => openDetail(item)}
+                    >
+                      {formatType(item.accident_type)}
+                    </button>
+                  </td>
+
+                  {/* Status: căn giữa cả dọc & ngang */}
+                  <td className="center-col">
+                    <div className="cell-center">
+                      <span className={`status-badge ${statusClass(code)}`}>
+                        {VI_LABELS[code]}
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Nút điều động: căn giữa dọc & ngang */}
+                  <td className="center-col">
+                    <div className="cell-center">
+                      {isPending && (
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => openDispatch(item)}
+                        >
+                          Điều động
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               );
             })}
-            {!accidents.length && !loading && (
+            {accidents.length === 0 && !loading && (
               <tr>
-                <td colSpan={6} style={{ textAlign: "center", opacity: 0.7 }}>
-                  Chưa có dữ liệu — hãy tạo qua Postman
+                <td colSpan={8} style={{ textAlign: "center", padding: 16 }}>
+                  Chưa có dữ liệu
                 </td>
               </tr>
             )}
           </tbody>
         </table>
-      </div>
 
-      {selectedAccident && (
-        <div
-          className="modal-overlay"
-          onClick={() => {
-            setSelectedAccident(null);
-            setShowAddForm(false);
-          }}
-        >
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Chi tiết tai nạn</h2>
-            <p>
-              <strong>ID:</strong> {selectedAccident.accident_id}
-            </p>
-            <p>
-              <strong>Đường:</strong> {getRoad(selectedAccident)}
-            </p>
-            <p>
-              <strong>Thời gian:</strong> {formatTime(getTs(selectedAccident))}
-            </p>
-            <img
-              src={selectedAccident.image_url}
-              alt="Accident Detail"
-              width="200"
-              loading="lazy"
-              onError={(e) => {
-                const el = e.currentTarget;
-                if (!el.dataset.fallback) {
-                  el.dataset.fallback = "1";
-                  el.src = "https://via.placeholder.com/300x180?text=No+Image";
-                }
-              }}
-            />
-
-            <h3>Responders</h3>
-            <ul>
-              {(selectedAccident.responder || []).map((r, idx) => (
-                <li key={idx}>{UNIT_LABELS[r.unit_type] || r.unit_type}</li>
-              ))}
-            </ul>
-
-            {showAddForm ? (
-              <form
-                onSubmit={handleAddResponder}
-                className="add-responder-form"
-              >
-                <select
-                  value={formData.unit_type}
-                  onChange={(e) =>
-                    setFormData((f) => ({ ...f, unit_type: e.target.value }))
-                  }
+        {/* Popup Chi tiết */}
+        {detailOpen && (
+          <div
+            className="modal-overlay"
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+            onClick={() => setDetailOpen(false)}
+            onKeyDown={(e) => e.key === "Escape" && setDetailOpen(false)}
+          >
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3 className="modal-title">{t("accident.detailTitle")}</h3>
+                <button
+                  className="icon-button"
+                  onClick={() => setDetailOpen(false)}
+                  aria-label="Đóng"
                 >
-                  <option value="ambulance">Cấp cứu 115</option>
-                  <option value="police">CSGT</option>
-                  <option value="fire">Cứu hỏa</option>
-                  <option value="rescue">Cứu nạn</option>
-                </select>
-                <select
-                  value={formData.status}
-                  onChange={(e) =>
-                    setFormData((f) => ({ ...f, status: e.target.value }))
-                  }
-                >
-                  <option value="en_route">Đang đến</option>
-                  <option value="on_scene">Đang xử lý</option>
-                  <option value="cleared">Đã xử lý</option>
-                  <option value="canceled">Đã hủy</option>
-                </select>
-                <div className="actions">
-                  <button type="submit" disabled={submitting}>
-                    {submitting ? "Đang lưu..." : "Lưu"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowAddForm(false)}
-                    className="secondary"
-                  >
-                    Hủy
-                  </button>
+                  ×
+                </button>
+              </div>
+
+              <div className="modal-body">
+                <p>
+                  <strong>{t("accident.table.id")}:</strong>{" "}
+                  {detailAcc?.accident_id}
+                </p>
+                <p>
+                  <strong>{t("accident.road")}:</strong> {detailAcc?.road_name}
+                </p>
+                <p>
+                  <strong>Camera:</strong> {formatCamera(detailAcc?.camera_id)}
+                </p>
+                <p>
+                  <strong>Loại:</strong> {formatType(detailAcc?.accident_type)}
+                </p>
+                <p>
+                  <strong>{t("accident.time")}:</strong>{" "}
+                  {detailAcc?.timestamp
+                    ? new Date(detailAcc.timestamp).toLocaleString("vi-VN")
+                    : "-"}
+                </p>
+                <p>
+                  <strong>{t("accident.status")}:</strong>{" "}
+                  {VI_LABELS[normalizeStatus(detailAcc?.status)]}
+                </p>
+
+                {detailAcc?.image_url && (
+                  <img src={detailAcc.image_url} alt="Chi tiết tai nạn" />
+                )}
+
+                <div className="responders-grid">
+                  <strong>Đơn vị phản ứng:</strong>
+                  <div className="space-y-2">
+                    {(detailAcc?.responder ?? []).length === 0 && (
+                      <div>Không có</div>
+                    )}
+                    {(detailAcc?.responder ?? []).map((r, idx) => (
+                      <div key={idx} className="modal-row">
+                        <div>
+                          <div className="font-medium">
+                            {r.name || r.unit_id}
+                          </div>
+                          <div className="text-xs" style={{ color: "#64748b" }}>
+                            {r.unit_type}
+                          </div>
+                        </div>
+                        <div style={{ fontWeight: 600 }}>
+                          {VI_LABELS[normalizeStatus(r.status)] || r.status}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </form>
-            ) : (
-              <button onClick={() => setShowAddForm(true)}>
-                + Thêm cán bộ xử lý
-              </button>
-            )}
+              </div>
+
+              <div className="modal-actions">
+                <button className="btn" onClick={() => setDetailOpen(false)}>
+                  {t("accident.close")}
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Popup Điều động */}
+        {dispatchOpen && (
+          <div
+            className="modal-overlay"
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+            onClick={() => setDispatchOpen(false)}
+            onKeyDown={(e) => e.key === "Escape" && setDispatchOpen(false)}
+          >
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3 className="modal-title">Xác nhận điều động</h3>
+                <button
+                  className="icon-button"
+                  onClick={() => setDispatchOpen(false)}
+                  aria-label="Đóng"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="modal-body single-column">
+                <p className="mb-2" style={{ gridColumn: "span 2" }}>
+                  Sự cố <strong>#{selectedAccident?.accident_id}</strong> –{" "}
+                  {selectedAccident?.road_name}
+                </p>
+                <div className="space-y-2" style={{ gridColumn: "span 2" }}>
+                  {previewResponders.map((r, idx) => (
+                    <div key={idx} className="modal-row">
+                      <div>
+                        <div className="font-medium">{r.name}</div>
+                        <div className="text-xs" style={{ color: "#64748b" }}>
+                          {r.unit_type}
+                        </div>
+                      </div>
+                      <div className="text-right text-sm">
+                        <div className="text-green-700">{r.eta} phút</div>
+                        <div className="text-xs" style={{ color: "#64748b" }}>
+                          ~{r.distance.toFixed(2)} km
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="modal-actions">
+                <button className="btn" onClick={() => setDispatchOpen(false)}>
+                  Hủy
+                </button>
+                <button className="btn btn-success" onClick={confirmDispatch}>
+                  Xác nhận điều động
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

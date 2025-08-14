@@ -27,6 +27,8 @@
 
 .table-container {
   width: 100%;
+  height: 100%;
+  overflow-x: auto;
 }
 
 /* ============ TABLE ============ */
@@ -69,24 +71,54 @@
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* Ảnh trong bảng */
-.accident td img {
-  display: block;
-  width: 120px;
-  height: 72px;
+/* Căn giữa cho 2 cột cuối (TH & TD) */
+.accident table th.center-col,
+.accident table td.center-col {
+  text-align: center !important;
+}
+
+/* Wrapper để canh giữa thật sự cả dọc & ngang trong cell */
+.cell-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 40px;
+}
+
+/* ID dạng link bấm được / nút link */
+.link-like {
+  background: transparent;
+  border: none;
+  color: #60a5fa;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+}
+.link-like:hover {
+  text-decoration: none;
+  text-transform: none;
+}
+
+/* Ảnh trong ô bảng */
+.accident td img,
+.thumb {
+  width: 150px; /* khớp với JSX mới */
+  height: 100px;
   object-fit: cover;
   border-radius: 10px;
   border: 1px solid var(--border);
   background: #0b0f16;
+  cursor: pointer;
 }
 
-/* ID có thể click */
+/* ID có thể click (bản cũ) – vẫn giữ để tương thích */
 .clickable-id {
   font-weight: 800;
   color: var(--accent);
 }
 
-/* Ô responders */
+/* Ô responders trong bảng (bản cũ) */
 .accident td > div {
   margin: 3px 0;
 }
@@ -95,20 +127,12 @@
 }
 
 /* ============ STATUS (giữa ngang + dọc) ============ */
-/* Ô cột trạng thái */
-.accident td.status-cell {
-  text-align: center;
-  vertical-align: middle; /* canh giữa theo dòng */
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-/* Huy hiệu trạng thái */
-.badge {
+/* Huy hiệu trạng thái: dùng class mới .status-badge cho JSX hiện tại */
+.status-badge {
   display: inline-flex;
-  justify-content: center; /* giữa ngang cho nội dung */
-  align-items: center; /* giữa dọc cho nội dung */
-  height: 34px; /* chiều cao cố định để canh dọc đẹp */
+  justify-content: center;
+  align-items: center;
+  height: 34px;
   padding: 0 14px;
   min-width: 120px;
   border-radius: 999px;
@@ -116,25 +140,55 @@
   letter-spacing: 0.01em;
   border: 1px solid transparent;
   background: rgba(255, 255, 255, 0.04);
-  margin: 0 auto; /* đảm bảo nằm giữa ô */
+  margin: 0 auto;
 }
 
-/* Màu theo trạng thái */
-/* Màu theo trạng thái - rõ hơn trên nền tối */
-.badge.status-open {
-  color: #00ffe0; /* xanh ngọc sáng hơn */
+/* Màu theo trạng thái (giữ tông trên nền tối) */
+.status-open {
+  color: #00ffe0;
+} /* xanh ngọc sáng */
+.status-processing {
+  color: #ffb84d;
+} /* vàng sáng */
+.status-closed {
+  color: #4dff91;
+} /* xanh lá sáng */
+.status-canceled {
+  color: #ff6b6b;
+} /* đỏ sáng */
+
+/* ============ Buttons ============ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  background: #e2e8f0;
+  color: #0f172a;
+  transition: filter 0.2s, transform 0.05s, background 0.2s;
+}
+.btn:hover {
+  filter: brightness(0.98);
+}
+.btn:active {
+  transform: translateY(1px) scale(0.995);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.badge.status-processing {
-  color: #ffb84d; /* vàng sáng hơn */
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
 }
-
-.badge.status-closed {
-  color: #4dff91; /* xanh lá sáng hơn */
-}
-
-.badge.status-canceled {
-  color: #ff6b6b; /* đỏ sáng hơn */
+.btn-success {
+  background: #16a34a;
+  color: #fff;
 }
 
 /* ============ MODAL ============ */
@@ -157,110 +211,94 @@
   border-radius: 20px;
   box-shadow: var(--shadow);
   padding: 24px;
-  text-align: center;
+  color: var(--text);
   animation: pop 0.18s ease-out;
 }
-.modal-content h2 {
-  margin: 0 0 12px;
-  color: var(--accent);
-  font-size: 26px;
-  font-weight: 900;
+
+/* Header của modal (để dùng với JSX mới) */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
-.modal-content p strong {
+.modal-title {
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--accent);
+}
+.icon-button {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #94a3b8;
+}
+
+/* Body modal dạng grid 2 cột */
+.modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+  padding: 8px 0 12px;
+}
+.modal-body p {
+  margin: 0;
+  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+}
+.modal-body strong {
+  font-weight: 600;
   color: #cfe7e2;
 }
-.modal-content img {
+
+/* Ảnh & responders chiếm 2 cột */
+.modal-body img {
+  grid-column: span 2;
   width: 100%;
-  max-width: 520px;
-  height: auto;
-  margin: 10px auto 6px;
+  max-height: 340px;
+  object-fit: cover;
   border-radius: 14px;
   border: 1px solid var(--border);
+  margin-top: 8px;
+}
+.responders-grid {
+  grid-column: span 2;
 }
 
-/* Responders trong modal */
-.modal-content ul {
-  list-style: none;
-  padding: 0;
-  margin: 10px 0 16px;
-}
-.modal-content ul li {
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 12px;
-  margin: 6px 0;
-}
-
-/* Form thêm responder */
-.add-responder-form {
+/* Hàng trong modal */
+.modal-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 12px;
-}
-.add-responder-form select {
-  appearance: none;
-  background: #0f1420;
-  color: var(--text);
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 10px 12px;
-  min-width: 190px;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-}
-.add-responder-form select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0, 230, 184, 0.22);
 }
 
-/* Buttons */
-button {
-  appearance: none;
-  cursor: pointer;
-  border: 0;
-  font-weight: 800;
-}
-button:not(.secondary) {
-  background: var(--accent);
-  color: #0a1412;
-  padding: 12px 16px;
-  border-radius: 12px;
-  transition: filter 0.2s, transform 0.05s, background 0.2s;
-}
-button:not(.secondary):hover {
-  filter: brightness(1.05);
-}
-button:not(.secondary):active {
-  transform: translateY(1px) scale(0.995);
-}
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+/* Khi modal điều động chỉ 1 cột */
+.modal-body.single-column {
+  grid-template-columns: 1fr;
 }
 
-button.secondary {
-  background: transparent;
-  color: #d1d7e2;
-  border: 1px solid var(--border);
-  padding: 12px 16px;
-  border-radius: 12px;
-}
-button.secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
+/* Khu actions modal (nếu cần) */
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 /* Animations */
 @keyframes pop {
   from {
-    transform: translateY(4px) scale(0.98);
     opacity: 0;
+    transform: translateY(4px) scale(0.98);
   }
   to {
-    transform: none;
     opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 @keyframes fadeIn {
@@ -278,7 +316,8 @@ button.secondary:hover {
   .accident tbody td:nth-child(4) {
     display: none;
   } /* Ẩn cột Image */
-  .accident td img {
+  .accident td img,
+  .thumb {
     width: 96px;
     height: 58px;
   }
@@ -286,12 +325,7 @@ button.secondary:hover {
     padding: 18px;
     border-radius: 16px;
   }
-  .add-responder-form {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .add-responder-form select,
-  .actions button {
-    width: 100%;
+  .modal-body {
+    grid-template-columns: 1fr;
   }
 }
