@@ -1,3 +1,4 @@
+// vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "url";
@@ -10,8 +11,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./src"), // alias cho thư mục src
-      "@root": resolve(__dirname, "./"), // alias cho thư mục gốc dự án
+      "@": resolve(__dirname, "./src"),
+      "@root": resolve(__dirname, "./"),
     },
   },
   server: {

@@ -2,27 +2,113 @@ import { useEffect, useState } from "react";
 import { useLanguageContext } from "../../contexts/LanguageContext";
 import "./Accident.css";
 
-import {
-  normalizeStatus,
-  inferAccidentStatusFromResponders,
-  findNearestResponders,
-} from "../../utils/dispatch";
-
-/* ===== Cấu hình API ===== */
+const USE_MOCK = true;
 const BASE_URL = "http://localhost:8087/quet/api";
-const AUTH_TOKEN = ""; // "Bearer <token>" nếu cần
+const AUTH_TOKEN = "";
 
-/* ===== Tham số thuật toán ===== */
+// tốc độ mặc định và ETA tối thiểu (phút)
 const SPEED_KMH_DEFAULT = 50;
 const MIN_ETA_MIN = 2;
 
-/* ===== Helpers UI ===== */
+/* ===== Fake API data (demo) ===== */
+const MOCK_SERVER_RESPONSE = {
+  data: [
+    {
+      accident_id: 1012,
+      road_name: "QL1A",
+      camera_id: "cam_12",
+      timestamp: "2025-08-04T23:45:00Z",
+      accident_type: "car_crash",
+      image_url:
+        "https://nld.mediacdn.vn/291774122806476800/2024/2/9/tainan-16831577744301894433461-1707472121000345252032.jpeg",
+      responder: [
+        { unit_id: "unit_01", unit_type: "ambulance", status: "en_route" },
+        { unit_id: "unit_05", unit_type: "police", status: "en_route" },
+      ],
+      lat: 10.7779,
+      lng: 106.7009,
+    },
+    {
+      accident_id: 1013,
+      road_name: "QL1A",
+      camera_id: "cam_12",
+      timestamp: "2025-08-04T23:45:00Z",
+      accident_type: "car_crash",
+      image_url: "https://yourdomain.com/images/accidents/1012.jpg",
+      responder: [
+        { unit_id: "unit_01", unit_type: "ambulance", status: "en_route" },
+      ],
+      lat: 10.7792,
+      lng: 106.7055,
+    },
+    {
+      accident_id: 1014, // pending
+      road_name: "QL51",
+      camera_id: "cam_22",
+      timestamp: "2025-08-05T08:30:00Z",
+      accident_type: "car_crash",
+      image_url:
+        "https://nld.mediacdn.vn/291774122806476800/2024/2/9/tainan-16831577744301894433461-1707472121000345252032.jpeg",
+      responder: [],
+      lat: 10.7779,
+      lng: 106.7009,
+    },
+  ],
+};
+
+/* ===== Responders có GPS để tính khoảng cách ===== */
+const MOCK_RESPONDERS = [
+  {
+    unit_type: "police",
+    name: "Nguyễn Văn A",
+    lat: 10.7775,
+    lng: 106.701,
+    status: "available",
+  },
+  {
+    unit_type: "police",
+    name: "Trần Văn B",
+    lat: 10.8679,
+    lng: 106.7009,
+    status: "available",
+  }, // ~10km
+  {
+    unit_type: "ambulance",
+    name: "Trạm 115 KV",
+    lat: 10.779,
+    lng: 106.704,
+    status: "available",
+  },
+  {
+    unit_type: "firefighter",
+    name: "Đội PCCC 1",
+    lat: 10.781,
+    lng: 106.707,
+    status: "busy",
+  },
+];
+
+/* ===== Helpers ===== */
+function normalizeStatus(raw) {
+  const s = String(raw || "")
+    .trim()
+    .toLowerCase();
+  const map = {
+    en_route: ["en_route", "đang đến"],
+    cleared: ["cleared", "đã xử lý"],
+    canceled: ["canceled", "đã hủy"],
+  };
+  for (const [k, arr] of Object.entries(map)) if (arr.includes(s)) return k;
+  return "pending";
+}
+
 const VI_LABELS = {
   pending: "chờ xác nhận",
   en_route: "đang đến",
   cleared: "đã xử lý",
   canceled: "đã hủy",
 };
+
 function statusClass(code) {
   switch (code) {
     case "pending":
@@ -37,25 +123,23 @@ function statusClass(code) {
       return "status-open";
   }
 }
-function formatCamera(id) {
-  const m = String(id || "").match(/\d+/);
-  return m ? `cam ${m[0]}` : "-";
-}
-function formatType(type) {
-  const s = String(type || "").toLowerCase();
-  if (s.startsWith("car")) return "car";
-  return s.replace(/_.*/, "") || "-";
+
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
 
-/* ===== API wrapper ===== */
 async function apiCall(path, method = "GET", body) {
   const url = path.startsWith("http") ? path : `${BASE_URL}${path}`;
   const headers = { "Content-Type": "application/json" };
-  if (AUTH_TOKEN) {
-    headers.Authorization = AUTH_TOKEN.startsWith("Bearer")
-      ? AUTH_TOKEN
-      : `Bearer ${AUTH_TOKEN}`;
-  }
+  if (AUTH_TOKEN) headers.Authorization = `Bearer ${AUTH_TOKEN}`;
   const res = await fetch(url, {
     method,
     headers,
@@ -65,10 +149,30 @@ async function apiCall(path, method = "GET", body) {
   try {
     json = await res.json();
   } catch {
-    /* empty */
+    /* ignore empty body */
   }
   if (!res.ok) throw new Error(json?.message || `HTTP ${res.status}`);
   return json;
+}
+
+function inferAccidentStatus(accident) {
+  const responders = Array.isArray(accident.responder)
+    ? accident.responder
+    : [];
+  const anyEnRoute = responders.some(
+    (r) => normalizeStatus(r.status) === "en_route"
+  );
+  return anyEnRoute ? "en_route" : "pending";
+}
+
+function formatCamera(id) {
+  const m = String(id || "").match(/\d+/);
+  return m ? `cam ${m[0]}` : "-";
+}
+function formatType(type) {
+  const s = String(type || "").toLowerCase();
+  if (s.startsWith("car")) return "car";
+  return s.replace(/_.*/, "") || "-";
 }
 
 export default function Accident() {
@@ -84,17 +188,22 @@ export default function Accident() {
   const [selectedAccident, setSelectedAccident] = useState(null);
   const [previewResponders, setPreviewResponders] = useState([]); // {unit_type,name,distance,eta}
 
-  /* ===== Load danh sách sự cố ===== */
   const fetchAccidents = async () => {
     setLoading(true);
     try {
-      const res = await apiCall("/accidents", "GET");
-      const raw = Array.isArray(res) ? res : res?.data ?? [];
-      const list = raw.map((a) => ({
-        ...a,
-        status: inferAccidentStatusFromResponders(a.responder),
-      }));
-      setAccidents(list);
+      if (USE_MOCK) {
+        await new Promise((r) => setTimeout(r, 250));
+        const list = (MOCK_SERVER_RESPONSE?.data ?? []).map((a) => ({
+          ...a,
+          status: inferAccidentStatus(a),
+        }));
+        setAccidents(list);
+      } else {
+        const res = await apiCall("/accidents", "GET");
+        const raw = Array.isArray(res) ? res : res?.data ?? [];
+        const list = raw.map((a) => ({ ...a, status: inferAccidentStatus(a) }));
+        setAccidents(list);
+      }
     } finally {
       setLoading(false);
     }
@@ -109,87 +218,63 @@ export default function Accident() {
     setDetailOpen(true);
   };
 
-  /* ===== Mở popup điều động: lấy responders thật từ API và tính gần nhất ===== */
-  const openDispatch = async (acc) => {
+  const openDispatch = (acc) => {
     if (normalizeStatus(acc.status) !== "pending") return;
     if (!(acc.lat && acc.lng)) {
       alert("Sự cố chưa có toạ độ GPS để điều động.");
       return;
     }
 
-    try {
-      const respondersRes = await apiCall("/responders", "GET");
-      const responders = Array.isArray(respondersRes)
-        ? respondersRes
-        : respondersRes?.data ?? [];
+    const speedByType = { police: 50, ambulance: 50, firefighter: 50 };
 
-      const nearest = findNearestResponders(acc, responders, {
-        radiusKm: 10.5,
-        limit: 3,
-        minEtaMin: MIN_ETA_MIN,
-        speedByType: { police: 50, ambulance: 50, firefighter: 50 },
-        defaultSpeedKmh: SPEED_KMH_DEFAULT,
-      });
+    const nearest = MOCK_RESPONDERS.filter((r) => r.status === "available")
+      .map((r) => {
+        const distance = haversine(acc.lat, acc.lng, r.lat, r.lng); // km
+        const speed = speedByType[r.unit_type] ?? SPEED_KMH_DEFAULT;
+        const eta = Math.max(MIN_ETA_MIN, Math.ceil((distance / speed) * 60)); // phút
+        return { unit_type: r.unit_type, name: r.name, distance, eta };
+      })
+      .filter((r) => r.distance <= 10.5)
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, 3);
 
-      if (!nearest.length) {
-        alert("Không có đơn vị phù hợp trong bán kính 10km!");
-        return;
-      }
-
-      setSelectedAccident(acc);
-      setPreviewResponders(nearest);
-      setDispatchOpen(true);
-    } catch (e) {
-      console.error(e);
-      alert("Không tải được danh sách đơn vị phản ứng!");
+    if (!nearest.length) {
+      alert("Không có đơn vị phù hợp trong bán kính 10km!");
+      return;
     }
+    setSelectedAccident(acc);
+    setPreviewResponders(nearest);
+    setDispatchOpen(true);
   };
 
-  /* ===== Xác nhận điều động: gọi API để lưu (tuỳ backend) và cập nhật UI ===== */
   const confirmDispatch = async () => {
     try {
-      const payload = {
-        responders: previewResponders.map((r, idx) => ({
-          unit_id: `disp_${idx + 1}`,
-          unit_type: r.unit_type,
-          status: "en_route",
-          name: r.name,
-          eta_min: r.eta,
-          distance_km: Number(r.distance.toFixed(2)),
-        })),
-      };
+      const dispatched = previewResponders.map((r, idx) => ({
+        unit_id: `disp_${idx + 1}`,
+        unit_type: r.unit_type,
+        status: "en_route",
+        name: r.name,
+      }));
 
-      // Thử gọi endpoint lưu điều động (điều chỉnh cho khớp backend của bạn)
-      try {
-        await apiCall(
-          `/accidents/${selectedAccident.accident_id}/dispatch`,
-          "POST",
-          payload
-        );
-      } catch (e) {
-        console.warn("Fallback local update only:", e.message);
-      }
-
-      // Cập nhật UI local
       setAccidents((prev) =>
         prev.map((a) =>
           a.accident_id === selectedAccident.accident_id
             ? {
                 ...a,
                 status: "en_route",
-                responder: [...(a.responder ?? []), ...payload.responders],
+                responder: [...(a.responder ?? []), ...dispatched],
               }
             : a
         )
       );
 
-      // nếu popup chi tiết đang mở cùng vụ, cập nhật ngay
+      // nếu popup chi tiết đang mở cùng vụ, cập nhật ngay trong modal
       setDetailAcc((prev) =>
         prev && prev.accident_id === selectedAccident.accident_id
           ? {
               ...prev,
               status: "en_route",
-              responder: [...(prev.responder ?? []), ...payload.responders],
+              responder: [...(prev.responder ?? []), ...dispatched],
             }
           : prev
       );
@@ -283,7 +368,7 @@ export default function Accident() {
                     </button>
                   </td>
 
-                  {/* Status: căn giữa cả dọc & ngang */}
+                  {/* Status: căn giữa cả dọc & ngang bằng wrapper flex */}
                   <td className="center-col">
                     <div className="cell-center">
                       <span className={`status-badge ${statusClass(code)}`}>
@@ -318,7 +403,7 @@ export default function Accident() {
           </tbody>
         </table>
 
-        {/* Popup Chi tiết */}
+        {/* Popup Chi tiết (2 cột) */}
         {detailOpen && (
           <div
             className="modal-overlay"
