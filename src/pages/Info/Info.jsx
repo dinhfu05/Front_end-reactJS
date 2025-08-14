@@ -11,20 +11,20 @@ function Info({ onLogout }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showAvatar, setShowAvatar] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState("");
 
   // Lấy dữ liệu người dùng khi component mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     const id = sessionStorage.getItem("userId");
 
-    // Kiểm tra token và id tồn tại, nếu không có thì báo lỗi
     if (!token || !id) {
       setError(t("info.notLoggedIn"));
       setLoading(false);
       return;
     }
 
-    // Gọi API lấy thông tin người dùng
+    // Gọi API lấy thông tin person để lấy facepath
     fetch(`http://localhost:8087/quet/api/person/${id}`, {
       method: "GET",
       headers: {
@@ -40,9 +40,42 @@ function Info({ onLogout }) {
         return res.json();
       })
       .then((data) => {
+        console.log("Thông tin person:", data); // Log toàn bộ dữ liệu trả về
         setUserInfo(data);
+        // Nếu có facePath thì lấy ảnh từ API
+        if (data.facePath) {
+          console.log("facePath lấy được:", data.facePath); // Log facePath
+          fetch(`http://localhost:8087/quet/api/images/${data.facePath}`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((res) => {
+              if (!res.ok) {
+                console.error(
+                  "Không lấy được ảnh đại diện, status:",
+                  res.status
+                );
+                throw new Error("Không lấy được ảnh đại diện");
+              }
+              return res.blob();
+            })
+            .then((blob) => {
+              setAvatarUrl(URL.createObjectURL(blob));
+              console.log("Đã tạo URL cho avatar");
+            })
+            .catch((err) => {
+              console.error("Lỗi khi lấy ảnh avatar:", err);
+              setAvatarUrl("");
+            });
+        } else {
+          console.warn("Không có facePath trong dữ liệu person");
+          setAvatarUrl(""); // Không có facePath thì để trống hoặc ảnh mặc định
+        }
       })
       .catch((err) => {
+        console.error("Lỗi khi lấy thông tin person:", err);
         setError(err.message);
       })
       .finally(() => {
@@ -75,7 +108,7 @@ function Info({ onLogout }) {
         {/* Sidebar avatar và tên */}
         <div className="profile-sidebar">
           <img
-            src="/phu.jpg"
+            src={avatarUrl}
             alt={t("info.avatar")}
             className="profile-avatar-big"
             onClick={() => setShowAvatar(true)}
@@ -159,7 +192,7 @@ function Info({ onLogout }) {
         <div className="modal-overlay" onClick={() => setShowAvatar(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <img
-              src="/phu.jpg"
+              src={avatarUrl}
               alt={t("info.avatar")}
               style={{ width: "100%", borderRadius: 12 }}
             />

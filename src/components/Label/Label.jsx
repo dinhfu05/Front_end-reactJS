@@ -7,8 +7,7 @@ import {
   FaUserShield,
   FaCog,
   FaSignOutAlt,
-  FaSun,
-  FaMoon,
+  FaListAlt,
 } from "react-icons/fa";
 import { useLanguageContext } from "../../contexts/LanguageContext";
 import "./Label.css";
@@ -99,7 +98,7 @@ function Column({ onLogout }) {
 
           <TabButton
             onselect={() => navigate("/violations")}
-            icon={<FaUserShield />}
+            icon={<FaListAlt />}
             isActive={location.pathname === "/violations"}
           >
             {t("navigation.violationList")}

@@ -11,6 +11,15 @@
   overflow: hidden;
 }
 
+.profile-bg {
+  position: absolute;
+  width: 78%;
+  height: 80%;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  margin-top: 10%;
+}
 /* Sidebar bên trái chứa avatar và thông tin cơ bản */
 .profile-sidebar {
   background: var(--card-bg);
