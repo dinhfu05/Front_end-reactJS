@@ -28,7 +28,8 @@
   border: none;
   outline: none;
   background: #edecec;
-  color: var(--text);
+  color: #000000;
+  font-weight: bold;
   font-size: 15px;
   box-shadow: 0 0 0 2px #38bdf8 inset; /* viền trong xanh */
   transition: 0.3s; /* chuyển cảnh mượt */

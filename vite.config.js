@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"), // alias cho thư mục src
-      "@root": path.resolve(__dirname, "./"), // alias cho thư mục gốc dự án
+      "@": path.resolve(__dirname, "./src"),
+      "@root": path.resolve(__dirname, "./"),
     },
   },
   server: {
