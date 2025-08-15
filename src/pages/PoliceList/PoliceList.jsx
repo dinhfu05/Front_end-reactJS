@@ -5,11 +5,10 @@ import "./PoliceList.css";
 const columns = [
   { key: "id", label: "police.id" },
   { key: "fullName", label: "police.fullName" },
-  { key: "role", label: "police.role" },
-  { key: "username", label: "police.username" },
   { key: "address", label: "police.address" },
   { key: "phoneNumber", label: "police.phoneNumber" },
   { key: "email", label: "police.email" },
+  { key: "role", label: "police.role" },
 ];
 
 export default function PoliceList() {
@@ -22,28 +21,6 @@ export default function PoliceList() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const sampleData = [
-      {
-        id: "083205001449",
-        fullName: "Hà Nguyễn Đình Phú",
-        address: "480/60 Bình Quới, phường Bình Quới, TP.HCM, Việt Nam",
-        phoneNumber: "09779689909",
-        email: "dinhphu511205@gmail.com",
-        role: "ADMIN",
-        username: "dinhphu511205",
-        facePath: "083205001449.jpg",
-      },
-      {
-        id: "123456789000",
-        fullName: "User A",
-        address: "Bình Dương",
-        phoneNumber: "0123456789",
-        email: "userA@example.com",
-        role: "USER",
-        username: "userA",
-        facePath: "",
-      },
-    ];
     fetch("http://localhost:8087/quet/api/account/staff", {
       headers: { Authorization: `Bearer ${token}` },
     })
