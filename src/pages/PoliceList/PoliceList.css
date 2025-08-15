@@ -92,7 +92,7 @@ button:hover {
 
 /* Modal content */
 .modal-content {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 12px;
   min-width: auto;
   max-width: 30vw;
@@ -103,7 +103,7 @@ button:hover {
 .modal-content h3 {
   margin-bottom: 12px;
   font-size: 1.3rem;
-  color: #1a3a6b;
+  color: var(--text);
 }
 .modal-content p {
   margin: 8px 0;
