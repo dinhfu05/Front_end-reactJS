@@ -5,10 +5,10 @@ import "./PoliceList.css";
 const columns = [
   { key: "id", label: "police.id" },
   { key: "fullName", label: "police.fullName" },
-  { key: "address", label: "police.address" },
   { key: "phoneNumber", label: "police.phoneNumber" },
   { key: "email", label: "police.email" },
   { key: "role", label: "police.role" },
+  { key: "address", label: "police.address" },
 ];
 
 export default function PoliceList() {
@@ -119,13 +119,13 @@ export default function PoliceList() {
               <b>{t("police.username")}:</b> {selectedPolice.username}
             </p>
             <p>
-              <b>{t("police.address")}:</b> {selectedPolice.address}
-            </p>
-            <p>
               <b>{t("police.phoneNumber")}:</b> {selectedPolice.phoneNumber}
             </p>
             <p>
               <b>{t("police.email")}:</b> {selectedPolice.email}
+            </p>
+            <p>
+              <b>{t("police.address")}:</b> {selectedPolice.address}
             </p>
             <button
               className="close-btn"
