@@ -2,93 +2,11 @@ import { useEffect, useState } from "react";
 import { useLanguageContext } from "../../contexts/LanguageContext";
 import "./Accident.css";
 
-const USE_MOCK = true;
-const BASE_URL = "http://localhost:8087/quet/api";
-const AUTH_TOKEN = "";
-
 // tốc độ mặc định và ETA tối thiểu (phút)
 const SPEED_KMH_DEFAULT = 50;
 const MIN_ETA_MIN = 2;
 
-/* ===== Fake API data (demo) ===== */
-const MOCK_SERVER_RESPONSE = {
-  data: [
-    {
-      accident_id: 1012,
-      road_name: "QL1A",
-      camera_id: "cam_12",
-      timestamp: "2025-08-04T23:45:00Z",
-      accident_type: "car_crash",
-      image_url:
-        "https://nld.mediacdn.vn/291774122806476800/2024/2/9/tainan-16831577744301894433461-1707472121000345252032.jpeg",
-      responder: [
-        { unit_id: "unit_01", unit_type: "ambulance", status: "en_route" },
-        { unit_id: "unit_05", unit_type: "police", status: "en_route" },
-      ],
-      lat: 10.7779,
-      lng: 106.7009,
-    },
-    {
-      accident_id: 1013,
-      road_name: "QL1A",
-      camera_id: "cam_12",
-      timestamp: "2025-08-04T23:45:00Z",
-      accident_type: "car_crash",
-      image_url: "https://yourdomain.com/images/accidents/1012.jpg",
-      responder: [
-        { unit_id: "unit_01", unit_type: "ambulance", status: "en_route" },
-      ],
-      lat: 10.7792,
-      lng: 106.7055,
-    },
-    {
-      accident_id: 1014, // pending
-      road_name: "QL51",
-      camera_id: "cam_22",
-      timestamp: "2025-08-05T08:30:00Z",
-      accident_type: "car_crash",
-      image_url:
-        "https://nld.mediacdn.vn/291774122806476800/2024/2/9/tainan-16831577744301894433461-1707472121000345252032.jpeg",
-      responder: [],
-      lat: 10.7779,
-      lng: 106.7009,
-    },
-  ],
-};
-
-/* ===== Responders có GPS để tính khoảng cách ===== */
-const MOCK_RESPONDERS = [
-  {
-    unit_type: "police",
-    name: "Nguyễn Văn A",
-    lat: 10.7775,
-    lng: 106.701,
-    status: "available",
-  },
-  {
-    unit_type: "police",
-    name: "Trần Văn B",
-    lat: 10.8679,
-    lng: 106.7009,
-    status: "available",
-  }, // ~10km
-  {
-    unit_type: "ambulance",
-    name: "Trạm 115 KV",
-    lat: 10.779,
-    lng: 106.704,
-    status: "available",
-  },
-  {
-    unit_type: "firefighter",
-    name: "Đội PCCC 1",
-    lat: 10.781,
-    lng: 106.707,
-    status: "busy",
-  },
-];
-
-/* ===== Helpers ===== */
+// Helpers
 function normalizeStatus(raw) {
   const s = String(raw || "")
     .trim()
@@ -136,25 +54,6 @@ function haversine(lat1, lon1, lat2, lon2) {
   return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
 
-async function apiCall(path, method = "GET", body) {
-  const url = path.startsWith("http") ? path : `${BASE_URL}${path}`;
-  const headers = { "Content-Type": "application/json" };
-  if (AUTH_TOKEN) headers.Authorization = `Bearer ${AUTH_TOKEN}`;
-  const res = await fetch(url, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  let json = {};
-  try {
-    json = await res.json();
-  } catch {
-    /* ignore empty body */
-  }
-  if (!res.ok) throw new Error(json?.message || `HTTP ${res.status}`);
-  return json;
-}
-
 function inferAccidentStatus(accident) {
   const responders = Array.isArray(accident.responder)
     ? accident.responder
@@ -166,8 +65,8 @@ function inferAccidentStatus(accident) {
 }
 
 function formatCamera(id) {
-  const m = String(id || "").match(/\d+/);
-  return m ? `cam ${m[0]}` : "-";
+  if (!id) return "-";
+  return `cam ${id}`;
 }
 function formatType(type) {
   const s = String(type || "").toLowerCase();
@@ -179,6 +78,7 @@ export default function Accident() {
   const { t } = useLanguageContext();
   const [accidents, setAccidents] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState(""); // Thêm state search
 
   // Popups
   const [detailOpen, setDetailOpen] = useState(false);
@@ -188,22 +88,37 @@ export default function Accident() {
   const [selectedAccident, setSelectedAccident] = useState(null);
   const [previewResponders, setPreviewResponders] = useState([]); // {unit_type,name,distance,eta}
 
+  // Lấy danh sách tai nạn từ API thật
   const fetchAccidents = async () => {
     setLoading(true);
     try {
-      if (USE_MOCK) {
-        await new Promise((r) => setTimeout(r, 250));
-        const list = (MOCK_SERVER_RESPONSE?.data ?? []).map((a) => ({
-          ...a,
-          status: inferAccidentStatus(a),
-        }));
-        setAccidents(list);
-      } else {
-        const res = await apiCall("/accidents", "GET");
-        const raw = Array.isArray(res) ? res : res?.data ?? [];
-        const list = raw.map((a) => ({ ...a, status: inferAccidentStatus(a) }));
-        setAccidents(list);
-      }
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:8087/quet/api/accidents", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      const raw = Array.isArray(data) ? data : data?.data ?? [];
+      const list = raw.map((a) => ({
+        accident_id: a.accidentId,
+        road_name: a.roadName,
+        camera_id: a.cameraId,
+        timestamp: a.timestamp,
+        accident_type: a.accidentType,
+        image_url: a.imageUrl,
+        responder: Array.isArray(a.responder)
+          ? a.responder.map((r) => ({
+              unit_id: r.unitId,
+              unit_type: r.unitType,
+              status: r.status,
+            }))
+          : [],
+        status: inferAccidentStatus(a),
+        lat: a.lat,
+        lng: a.lng,
+      }));
+      setAccidents(list);
+    } catch {
+      setAccidents([]);
     } finally {
       setLoading(false);
     }
@@ -289,25 +204,53 @@ export default function Accident() {
     }
   };
 
+  // Lọc danh sách theo search (theo id, road_name, camera_id, accident_type)
+  const filteredAccidents = accidents.filter((item) => {
+    const q = search.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      String(item.accident_id).toLowerCase().includes(q) ||
+      (item.road_name || "").toLowerCase().includes(q) ||
+      (item.camera_id ? String(item.camera_id).toLowerCase() : "").includes(
+        q
+      ) ||
+      (item.accident_type || "").toLowerCase().includes(q)
+    );
+  });
+
   return (
     <div className="accident">
       <div className="table-container">
+        <h2 className="accident-title">
+          {t("accident.title") || "DANH SÁCH TAI NẠN"}
+        </h2>
+        <input
+          className="accident-search"
+          type="text"
+          placeholder={
+            t("accident.searchPlaceholder") ||
+            "Tìm kiếm mã, đường, camera, loại..."
+          }
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <table>
           <thead>
             <tr>
-              <th>{t("accident.table.id")}</th>
-              <th>{t("accident.table.road")}</th>
-              <th>{t("accident.table.time")}</th>
-              <th>{t("accident.table.image")}</th>
-              <th>Camera</th>
-              <th>Loại</th>
+              <th classname="table-title">{t("accident.table.id")}</th>
+              <th classname="table-title">{t("accident.table.road")}</th>
+              <th classname="table-title">{t("accident.table.time")}</th>
+              <th classname="table-title">Camera</th>
+              <th classname="table-title">{t("accident.table.type")}</th>
               <th className="center-col">{t("accident.table.status")}</th>
-              <th className="center-col">Điều động</th>
+              <th className="center-col">
+                {t("accident.confirmDispatchTitle")}
+              </th>
             </tr>
           </thead>
           <tbody>
-            {accidents.map((item) => {
-              const id = item.accident_id ?? item.id;
+            {filteredAccidents.map((item) => {
+              const id = item.accident_id;
               const code = normalizeStatus(item.status);
               const isPending = code === "pending";
               return (
@@ -339,19 +282,6 @@ export default function Accident() {
                     </button>
                   </td>
                   <td>
-                    {item.image_url ? (
-                      <img
-                        src={item.image_url}
-                        alt="Tai nạn"
-                        className="thumb"
-                        onClick={() => openDetail(item)}
-                        role="button"
-                      />
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                  <td>
                     <button
                       className="link-like"
                       onClick={() => openDetail(item)}
@@ -367,8 +297,6 @@ export default function Accident() {
                       {formatType(item.accident_type)}
                     </button>
                   </td>
-
-                  {/* Status: căn giữa cả dọc & ngang bằng wrapper flex */}
                   <td className="center-col">
                     <div className="cell-center">
                       <span className={`status-badge ${statusClass(code)}`}>
@@ -376,8 +304,6 @@ export default function Accident() {
                       </span>
                     </div>
                   </td>
-
-                  {/* Nút điều động: căn giữa dọc & ngang */}
                   <td className="center-col">
                     <div className="cell-center">
                       {isPending && (
@@ -393,10 +319,10 @@ export default function Accident() {
                 </tr>
               );
             })}
-            {accidents.length === 0 && !loading && (
+            {filteredAccidents.length === 0 && (
               <tr>
-                <td colSpan={8} style={{ textAlign: "center", padding: 16 }}>
-                  Chưa có dữ liệu
+                <td colSpan={7} style={{ textAlign: "center", padding: 16 }}>
+                  {t("accident.noData")}
                 </td>
               </tr>
             )}
@@ -450,8 +376,13 @@ export default function Accident() {
                   {VI_LABELS[normalizeStatus(detailAcc?.status)]}
                 </p>
 
+                {/* Hiện ảnh nếu có */}
                 {detailAcc?.image_url && (
-                  <img src={detailAcc.image_url} alt="Chi tiết tai nạn" />
+                  <img
+                    src={detailAcc.image_url}
+                    alt="Chi tiết tai nạn"
+                    style={{ maxWidth: "100%", margin: "12px 0" }}
+                  />
                 )}
 
                 <div className="responders-grid">
@@ -463,9 +394,7 @@ export default function Accident() {
                     {(detailAcc?.responder ?? []).map((r, idx) => (
                       <div key={idx} className="modal-row">
                         <div>
-                          <div className="font-medium">
-                            {r.name || r.unit_id}
-                          </div>
+                          <div className="font-medium">{r.unit_id}</div>
                           <div className="text-xs" style={{ color: "#64748b" }}>
                             {r.unit_type}
                           </div>

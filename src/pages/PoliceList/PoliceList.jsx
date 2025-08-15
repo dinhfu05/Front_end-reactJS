@@ -30,10 +30,10 @@ export default function PoliceList() {
   }, []);
 
   // Lọc theo id hoặc tên
-  const filteredList = policeList.filter(
-    (p) =>
-      p.id.toLowerCase().includes(search.toLowerCase()) ||
-      p.fullName.toLowerCase().includes(search.toLowerCase())
+  const filteredList = policeList.filter((p) =>
+    Object.values(p)
+      .filter((v) => typeof v === "string" || typeof v === "number")
+      .some((v) => String(v).toLowerCase().includes(search.toLowerCase()))
   );
 
   // Sắp xếp
@@ -82,7 +82,6 @@ export default function PoliceList() {
                 key={col.key}
                 onClick={() => handleSort(col.key)}
                 className="sortable"
-                style={{ cursor: "pointer", userSelect: "none" }}
               >
                 {t(col.label)}
                 {renderArrow(col.key)}

@@ -1,15 +1,19 @@
 /* ========== Layout tổng thể ========== */
 .accident {
   width: 100%;
-  height: 100%;
-  margin-top: 0;
-  overflow: auto;
-  background: transparent;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
 }
 .table-container {
-  width: 100%;
-  height: 100%;
-  overflow-x: auto;
+  margin: 40px auto 0 auto;
+  max-width: 1200px;
+  border-radius: 10px;
+  padding: 24px 16px 32px 16px;
+}
+.accident table th,
+.accident table td {
+  text-align: center;
 }
 
 /* ========== Bảng ========== */
@@ -18,18 +22,19 @@
   border-collapse: collapse;
   border-radius: 10px;
   overflow: hidden;
-  background: transparent;
+  background: var(--card-bg);
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.3);
 }
 thead th {
   text-align: left;
   padding: 10px 16px;
-  background: transparent;
+  background: var(--card-bg);
   color: var(--accent);
 }
 tbody td {
   padding: 10px 16px;
-  border-top: 1px solid #333;
-  vertical-align: middle; /* giúp giữa theo chiều dọc cơ bản */
+  border-top: 1px solid var(--border);
+  vertical-align: middle;
 }
 
 /* Căn giữa cho 2 cột cuối (TH & TD) */
@@ -44,21 +49,20 @@ tbody td {
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 40px; /* đảm bảo có chiều cao để align dọc dễ hơn */
+  min-height: 40px;
 }
 
 /* ID dạng link bấm được */
 .link-like {
   background: transparent;
   border: none;
-  color: #60a5fa;
+  color: var(--text);
   cursor: pointer;
   padding: 0;
   text-decoration: none;
 }
 .link-like:hover {
-  text-decoration: none;
-  text-transform: none;
+  text-decoration: underline;
 }
 
 /* Ảnh trong ô bảng */
@@ -81,23 +85,25 @@ tbody td {
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
-  background: #e2e8f0;
-  color: #0f172a;
+  background: var(--accent);
+  color: var(--btn-text);
 }
 .btn:hover {
   filter: brightness(0.98);
+  background-color: rgb(242, 0, 0);
 }
 .btn-primary {
-  background: #2563eb;
+  background: var(--btn-primary);
   color: #fff;
 }
 .btn-success {
-  background: #16a34a;
+  background: var(--btn-success);
   color: #fff;
 }
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  background: var(--btn-disabled);
 }
 
 /* Trạng thái */
@@ -109,23 +115,23 @@ tbody td {
   padding: 2px 0;
 }
 .status-open {
-  color: #b45309;
-} /* vàng nâu */
+  color: var(--status-open);
+}
 .status-processing {
-  color: #1d4ed8;
-} /* xanh dương */
+  color: var(--status-processing);
+}
 .status-closed {
-  color: #065f46;
-} /* xanh lá đậm */
+  color: var(--status-closed);
+}
 .status-canceled {
-  color: #991b1b;
-} /* đỏ sẫm */
+  color: var(--status-canceled);
+}
 
 /* ========== Modal ========== */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: var(--modal-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -134,8 +140,8 @@ tbody td {
 .modal-content {
   width: 100%;
   max-width: 560px;
-  background: transparent;
-  border: 1px solid #334155;
+  background: var(--modal-bg);
+  border: 1px solid var(--modal-border);
   border-radius: 16px;
   box-shadow: none;
   padding: 16px;
@@ -151,14 +157,14 @@ tbody td {
 .modal-title {
   font-weight: 700;
   font-size: 18px;
-  color: #e5e7eb;
+  color: var(--modal-title);
 }
 .icon-button {
   background: transparent;
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #94a3b8;
+  color: var(--btn-disabled);
 }
 
 /* Chia modal-body 2 cột */
@@ -176,7 +182,7 @@ tbody td {
 }
 .modal-body strong {
   font-weight: 600;
-  color: #fff;
+  color: var(--modal-header);
 }
 
 /* Ảnh & responders chiếm 2 cột */
@@ -198,7 +204,7 @@ tbody td {
   justify-content: space-between;
   align-items: center;
   background: transparent;
-  border: 1px solid #475569;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 10px 12px;
 }
@@ -217,4 +223,30 @@ tbody td {
     opacity: 1;
     transform: translateY(0);
   }
+}
+.accident-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: var(--accent, #2563eb);
+  text-align: center;
+  letter-spacing: 1px;
+}
+.accident-search {
+  width: 320px;
+  max-width: 100%;
+  padding: 10px 14px;
+  margin: 0 auto 18px auto;
+  display: block;
+  border: 1px solid var(--border, #cbd5e1);
+  border-radius: 8px;
+  font-size: 16px;
+  color: var(--text, #222);
+  background: var(--card-bg, #f1f5f9);
+  transition: border 0.2s;
+}
+.accident-search:focus {
+  outline: none;
+  border-color: var(--accent, #2563eb);
+  background: #fff;
 }

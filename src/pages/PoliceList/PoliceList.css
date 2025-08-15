@@ -41,6 +41,7 @@
   background: var(--card-bg);
   margin-bottom: 24px;
   font-size: 1rem;
+  text-align: center;
 }
 .police-table th,
 .police-table td {
@@ -49,8 +50,8 @@
   text-align: left;
 }
 .police-table th {
-  background: #eaf2fb;
-  color: #1a3a6b;
+  background: var(--card-bg);
+
   font-weight: 600;
 }
 .police-table tr:hover {
@@ -66,8 +67,8 @@ button {
   padding: 6px 16px;
   border-radius: 6px;
   border: none;
-  background: #1a3a6b;
-  color: #fff;
+  background: var(--accent);
+  color: var(--text);
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
@@ -111,7 +112,7 @@ button:hover {
 }
 .close-btn {
   margin-top: 18px;
-  background: #e74c3c;
+  background: var(--accent);
 }
 .close-btn:hover {
   background: #c0392b;
