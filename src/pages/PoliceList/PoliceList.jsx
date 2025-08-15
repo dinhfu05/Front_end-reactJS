@@ -2,20 +2,54 @@ import React, { useState, useEffect } from "react";
 import { useLanguageContext } from "../../contexts/LanguageContext";
 import "./PoliceList.css";
 
+const columns = [
+  { key: "id", label: "police.id" },
+  { key: "fullName", label: "police.fullName" },
+  { key: "role", label: "police.role" },
+  { key: "username", label: "police.username" },
+  { key: "address", label: "police.address" },
+  { key: "phoneNumber", label: "police.phoneNumber" },
+  { key: "email", label: "police.email" },
+];
+
 export default function PoliceList() {
   const { t } = useLanguageContext();
   const [policeList, setPoliceList] = useState([]);
   const [selectedPolice, setSelectedPolice] = useState(null);
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("id");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const sampleData = [
+      {
+        id: "083205001449",
+        fullName: "Hà Nguyễn Đình Phú",
+        address: "480/60 Bình Quới, phường Bình Quới, TP.HCM, Việt Nam",
+        phoneNumber: "09779689909",
+        email: "dinhphu511205@gmail.com",
+        role: "ADMIN",
+        username: "dinhphu511205",
+        facePath: "083205001449.jpg",
+      },
+      {
+        id: "123456789000",
+        fullName: "User A",
+        address: "Bình Dương",
+        phoneNumber: "0123456789",
+        email: "userA@example.com",
+        role: "USER",
+        username: "userA",
+        facePath: "",
+      },
+    ];
     fetch("http://localhost:8087/quet/api/account/staff", {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : Promise.resolve(sampleData)))
       .then((data) => setPoliceList(data))
-      .catch(() => setPoliceList([]));
+      .catch(() => setPoliceList(sampleData));
   }, []);
 
   // Lọc theo id hoặc tên
@@ -25,44 +59,70 @@ export default function PoliceList() {
       p.fullName.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Sắp xếp
+  const sortedList = [...filteredList].sort((a, b) => {
+    const valA = a[sortBy] ? a[sortBy].toString().toLowerCase() : "";
+    const valB = b[sortBy] ? b[sortBy].toString().toLowerCase() : "";
+    if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+    if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  // Xử lý khi click vào tiêu đề cột
+  const handleSort = (key) => {
+    if (sortBy === key) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(key);
+      setSortOrder("asc");
+    }
+  };
+
+  // Hiển thị mũi tên
+  const renderArrow = (key) => {
+    if (sortBy !== key) return null;
+    return (
+      <span className="sort-arrow">{sortOrder === "asc" ? "▲" : "▼"}</span>
+    );
+  };
+
   return (
     <div className="police-container">
       <h2 className="police-title">{t("police.title")}</h2>
       {/* Ô tìm kiếm */}
       <input
         type="text"
-        placeholder="Tìm theo ID hoặc tên cảnh sát..."
+        placeholder={t("police.searchPlaceholder")}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="police-search"
       />
-      {/* Bảng danh sách cảnh sát */}
       <table className="police-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Họ tên</th>
-            <th>Quân hàm</th>
-            <th>Chức vụ</th>
-            <th>Địa chỉ</th>
-            <th>Số điện thoại</th>
-            <th>Email</th>
-            <th>Thao tác</th>
+            {columns.map((col) => (
+              <th
+                key={col.key}
+                onClick={() => handleSort(col.key)}
+                className="sortable"
+                style={{ cursor: "pointer", userSelect: "none" }}
+              >
+                {t(col.label)}
+                {renderArrow(col.key)}
+              </th>
+            ))}
+            <th>{t("police.action")}</th>
           </tr>
         </thead>
         <tbody>
-          {filteredList.map((p) => (
+          {sortedList.map((p) => (
             <tr key={p.id}>
-              <td>{p.id}</td>
-              <td>{p.fullName}</td>
-              <td>{p.role}</td>
-              <td>{p.username}</td>
-              <td>{p.address}</td>
-              <td>{p.phoneNumber}</td>
-              <td>{p.email}</td>
+              {columns.map((col) => (
+                <td key={col.key}>{p[col.key]}</td>
+              ))}
               <td>
                 <button onClick={() => setSelectedPolice(p)}>
-                  Xem chi tiết
+                  {t("police.detail")}
                 </button>
               </td>
             </tr>
@@ -76,25 +136,25 @@ export default function PoliceList() {
             <PoliceAvatar facePath={selectedPolice.facePath} />
             <h3>{selectedPolice.fullName}</h3>
             <p>
-              <b>Quân hàm:</b> {selectedPolice.role}
+              <b>{t("police.role")}:</b> {selectedPolice.role}
             </p>
             <p>
-              <b>Chức vụ:</b> {selectedPolice.username}
+              <b>{t("police.username")}:</b> {selectedPolice.username}
             </p>
             <p>
-              <b>Địa chỉ:</b> {selectedPolice.address}
+              <b>{t("police.address")}:</b> {selectedPolice.address}
             </p>
             <p>
-              <b>Số điện thoại:</b> {selectedPolice.phoneNumber}
+              <b>{t("police.phoneNumber")}:</b> {selectedPolice.phoneNumber}
             </p>
             <p>
-              <b>Email:</b> {selectedPolice.email}
+              <b>{t("police.email")}:</b> {selectedPolice.email}
             </p>
             <button
               className="close-btn"
               onClick={() => setSelectedPolice(null)}
             >
-              Đóng
+              {t("police.close")}
             </button>
           </div>
         </div>
