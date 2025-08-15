@@ -54,7 +54,8 @@
   font-weight: 600;
 }
 .police-table tr:hover {
-  background: #f5faff;
+  background: var(--text);
+  color: var(--card-bg);
 }
 .police-table td:last-child {
   text-align: center;
