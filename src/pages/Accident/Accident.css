@@ -241,12 +241,12 @@ tbody td {
   border: 1px solid var(--border, #cbd5e1);
   border-radius: 8px;
   font-size: 16px;
-  color: var(--text, #222);
-  background: var(--card-bg, #f1f5f9);
+  color: var(--text);
+  background: var(--card-bg);
   transition: border 0.2s;
 }
 .accident-search:focus {
   outline: none;
   border-color: var(--accent, #2563eb);
-  background: #fff;
+  background: var(--card-bg);
 }

@@ -88,6 +88,8 @@ export default function Accident() {
   const [selectedAccident, setSelectedAccident] = useState(null);
   const [previewResponders, setPreviewResponders] = useState([]); // {unit_type,name,distance,eta}
 
+  const [imageBlobUrl, setImageBlobUrl] = useState(null);
+
   // Lấy danh sách tai nạn từ API thật
   const fetchAccidents = async () => {
     setLoading(true);
@@ -204,19 +206,67 @@ export default function Accident() {
     }
   };
 
-  // Lọc danh sách theo search (theo id, road_name, camera_id, accident_type)
+  // Lọc danh sách theo search (tìm trong toàn bộ dữ liệu object)
   const filteredAccidents = accidents.filter((item) => {
     const q = search.trim().toLowerCase();
     if (!q) return true;
-    return (
-      String(item.accident_id).toLowerCase().includes(q) ||
-      (item.road_name || "").toLowerCase().includes(q) ||
-      (item.camera_id ? String(item.camera_id).toLowerCase() : "").includes(
-        q
-      ) ||
-      (item.accident_type || "").toLowerCase().includes(q)
-    );
+
+    // Nếu chỉ nhập số, tìm theo id
+    if (/^\d+$/.test(q)) {
+      return String(item.accident_id) === q;
+    }
+
+    // Nếu có chữ cam, tìm theo camera
+    if (q.includes("cam")) {
+      return formatCamera(item.camera_id).toLowerCase().includes(q);
+    }
+
+    // Tìm kiếm toàn cục như cũ
+    const values = [
+      item.accident_id,
+      item.road_name,
+      formatCamera(item.camera_id),
+      formatType(item.accident_type),
+      VI_LABELS[normalizeStatus(item.status)],
+    ];
+    const allValues = values.join(" ").toLowerCase();
+    return allValues.includes(q);
   });
+
+  // Fetch ảnh khi mở chi tiết
+  useEffect(() => {
+    if (detailOpen && detailAcc?.image_url) {
+      const controller = new AbortController();
+      const fetchImage = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const res = await fetch(
+            `http://localhost:8087/quet/api/images/accident/${encodeURIComponent(
+              detailAcc.image_url
+            )}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+              signal: controller.signal,
+            }
+          );
+          if (!res.ok) throw new Error("Không tải được ảnh");
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          setImageBlobUrl(url);
+        } catch {
+          setImageBlobUrl(null);
+        }
+      };
+      fetchImage();
+      return () => {
+        controller.abort();
+        if (imageBlobUrl) URL.revokeObjectURL(imageBlobUrl);
+      };
+    } else {
+      setImageBlobUrl(null);
+    }
+    // eslint-disable-next-line
+  }, [detailOpen, detailAcc?.image_url]);
 
   return (
     <div className="accident">
@@ -377,12 +427,15 @@ export default function Accident() {
                 </p>
 
                 {/* Hiện ảnh nếu có */}
-                {detailAcc?.image_url && (
+                {detailAcc?.image_url && imageBlobUrl && (
                   <img
-                    src={detailAcc.image_url}
+                    src={imageBlobUrl}
                     alt="Chi tiết tai nạn"
                     style={{ maxWidth: "100%", margin: "12px 0" }}
                   />
+                )}
+                {detailAcc?.image_url && !imageBlobUrl && (
+                  <div>Đang tải ảnh...</div>
                 )}
 
                 <div className="responders-grid">
